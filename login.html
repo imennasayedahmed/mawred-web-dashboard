@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MAWRED – RFQ Platform Login</title>
+    <meta
+      name="description"
+      content="Sign in to MAWRED RFQ Platform as a Requester or Supplier."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="bg-decoration">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+    </div>
+
+    <main class="page-center">
+      <div class="card" id="login-card">
+        <!-- Logo -->
+        <div class="logo-wrap">
+          <div class="logo-icon">
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 32 32"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M16 4C16 4 8 10 8 18C8 22.4183 11.5817 26 16 26C20.4183 26 24 22.4183 24 18C24 10 16 4 16 4Z"
+                fill="white"
+                opacity="0.9"
+              />
+              <path
+                d="M16 12C16 12 11 16 11 20C11 22.7614 13.2386 25 16 25C18.7614 25 21 22.7614 21 20C21 16 16 12 16 12Z"
+                fill="white"
+                opacity="0.6"
+              />
+              <path
+                d="M16 8 Q20 14 18 20"
+                stroke="white"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                fill="none"
+                opacity="0.8"
+              />
+            </svg>
+          </div>
+          <h1 class="brand-name">MAWRED</h1>
+          <p class="brand-sub">RFQ PLATFORM</p>
+        </div>
+
+        <!-- Welcome -->
+        <div class="welcome-block">
+          <h2 class="welcome-title">Welcome Back</h2>
+          <p class="welcome-sub">Sign in to continue</p>
+        </div>
+
+        <!-- Role Toggle -->
+        <div class="role-toggle" role="tablist" aria-label="Select role">
+          <button
+            id="tab-requester"
+            class="role-btn active"
+            role="tab"
+            aria-selected="true"
+            aria-controls="login-form"
+            onclick="switchRole('requester')"
+          >
+            <svg
+              class="role-icon"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                x="2"
+                y="3"
+                width="16"
+                height="14"
+                rx="2"
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+              <path
+                d="M6 8h8M6 11h5"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+            Requester
+          </button>
+        </div>
+
+        <!-- Form -->
+        <form id="login-form" method="post" action="dashboard.html" novalidate>
+          <!-- Email -->
+          <div class="field-group">
+            <label class="field-label" for="email">Email</label>
+            <div class="input-wrap" id="email-wrap">
+              <span class="input-icon">
+                <svg
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    x="2"
+                    y="4"
+                    width="16"
+                    height="12"
+                    rx="2"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  />
+                  <path
+                    d="M2 7l8 5 8-5"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </span>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="field-input"
+                placeholder="name@company.com"
+                autocomplete="email"
+                aria-describedby="email-error"
+              />
+            </div>
+            <span
+              class="field-error"
+              id="email-error"
+              role="alert"
+              aria-live="polite"
+            ></span>
+          </div>
+
+          <!-- Password -->
+          <div class="field-group">
+            <label class="field-label" for="password">Password</label>
+            <div class="input-wrap" id="password-wrap">
+              <span class="input-icon">
+                <svg
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    x="4"
+                    y="9"
+                    width="12"
+                    height="9"
+                    rx="2"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  />
+                  <path
+                    d="M7 9V6a3 3 0 016 0v3"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </span>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                class="field-input"
+                placeholder="Enter your password"
+                autocomplete="current-password"
+                aria-describedby="password-error"
+              />
+              <button
+                type="button"
+                class="toggle-pw"
+                id="toggle-pw"
+                aria-label="Toggle password visibility"
+                onclick="togglePassword()"
+              >
+                <svg
+                  id="eye-icon"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M1 10s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6Z"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  />
+                  <circle
+                    cx="10"
+                    cy="10"
+                    r="2.5"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  />
+                </svg>
+              </button>
+            </div>
+            <span
+              class="field-error visible"
+              id="password-error"
+              role="alert"
+              aria-live="polite"
+            >
+              <svg viewBox="0 0 16 16" fill="none" class="err-icon">
+                <circle
+                  cx="8"
+                  cy="8"
+                  r="6.5"
+                  stroke="currentColor"
+                  stroke-width="1.2"
+                />
+                <path
+                  d="M8 5v4M8 11v.5"
+                  stroke="currentColor"
+                  stroke-width="1.2"
+                  stroke-linecap="round"
+                />
+              </svg>
+              Password must be at least 8 characters
+            </span>
+          </div>
+
+          <!-- Forgot password -->
+          <div class="forgot-row">
+            <a href="#" class="forgot-link" id="forgot-link"
+              >Forgot Password?</a
+            >
+          </div>
+
+          <!-- Sign In Button -->
+          <button type="submit" class="btn-signin" id="signin-btn">
+            <svg
+              class="btn-icon"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M3 10h14M10 4l7 6-7 6"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            Sign In
+          </button>
+
+          <!-- Divider -->
+          <!-- <div class="divider">
+            <span class="divider-line"></span>
+            <span class="divider-text">OR CONTINUE WITH</span>
+            <span class="divider-line"></span>
+          </div> -->
+        </form>
+
+        <!-- Register -->
+        <!-- <p class="register-text">
+          Don't have an account?
+          <a href="#" class="register-link" id="register-link">Register</a>
+        </p> -->
+
+        <!-- Security badge -->
+        <!-- <div class="security-badge">
+          <svg viewBox="0 0 16 16" fill="none" class="shield-icon">
+            <path
+              d="M8 1.5L2 4v4c0 3.314 2.686 6 6 7 3.314-1 6-3.686 6-7V4L8 1.5Z"
+              stroke="currentColor"
+              stroke-width="1.2"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M5.5 8l1.5 1.5L10.5 6"
+              stroke="currentColor"
+              stroke-width="1.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Secured with 256-bit encryption
+        </div> -->
+      </div>
+    </main>
+
+    <script src="js/login.js"></script>
+  </body>
+</html>
