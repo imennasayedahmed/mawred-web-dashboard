@@ -4,6 +4,11 @@
 
 "use strict";
 
+const admin = {
+  email: ["admin123@gmail.com"],
+  password: ["123456789"]
+}
+
 /* ── DOM references ─────────────────────────────────────── */
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
@@ -141,6 +146,16 @@ passwordInput.addEventListener("blur", () => {
   }
 });
 
+/* ── Admin Acess ────────────────────────────────────────── */
+function login(email, password) {
+
+  if (email === admin.email[0] && password === admin.password[0]) {
+    window.location.href = "dashboard.html";
+  } else {
+    alert("Access denied");
+  }
+}
+
 /* ── Form submit ────────────────────────────────────────── */
 loginForm.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -151,7 +166,7 @@ loginForm.addEventListener("submit", (e) => {
   if (!emailInput.value) {
     showError(emailWrap, emailError, "Email is required");
     valid = false;
-  } else if (!isValidEmail(emailInput.value)) {
+  } else if (!isValidEmail(emailInput.value) & !login(emailInput.value, passwordInput.value)) {
     showError(emailWrap, emailError, "Enter a valid email address");
     valid = false;
   } else {
