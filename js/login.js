@@ -166,7 +166,7 @@ loginForm.addEventListener("submit", (e) => {
   if (!emailInput.value) {
     showError(emailWrap, emailError, "Email is required");
     valid = false;
-  } else if (!isValidEmail(emailInput.value) & !login(emailInput.value, passwordInput.value)) {
+  } else if (!isValidEmail(emailInput.value) ) {
     showError(emailWrap, emailError, "Enter a valid email address");
     valid = false;
   } else {
@@ -210,19 +210,31 @@ loginForm.addEventListener("submit", (e) => {
   signinBtn.appendChild(label);
 
   setTimeout(() => {
-    signinBtn.classList.remove("loading");
-    signinBtn.disabled = false;
-    signinBtn.innerHTML = `
-      <svg class="btn-icon" viewBox="0 0 20 20" fill="none">
-        <path d="M3 10h14M10 4l7 6-7 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      Sign In
-    `;
-    showToast(
-      `Welcome! Signed in as ${currentRole.charAt(0).toUpperCase() + currentRole.slice(1)}`,
-    );
+    const emailVal = emailInput.value.trim();
+    const passwordVal = passwordInput.value;
+
+    if (emailVal === admin.email[0] && passwordVal === admin.password[0]) {
+      showToast(
+        `Welcome! Signed in as ${currentRole.charAt(0).toUpperCase() + currentRole.slice(1)}`,
+      );
+      setTimeout(() => {
+        window.location.href = "dashboard.html";
+      }, 600);
+    } else {
+      // Wrong credentials – reset button and show error
+      signinBtn.classList.remove("loading");
+      signinBtn.disabled = false;
+      signinBtn.innerHTML = `
+        <svg class="btn-icon" viewBox="0 0 20 20" fill="none">
+          <path d="M3 10h14M10 4l7 6-7 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Sign In
+      `;
+      showError(emailWrap, emailError, "Invalid email or password");
+      showError(passwordWrap, passwordError, "Invalid email or password");
+      showToast("Access denied — incorrect credentials");
+    }
   }, 1800);
-  window.location.href = "dashboard.html";
 });
 
 /* ── Alt buttons ────────────────────────────────────────── */
