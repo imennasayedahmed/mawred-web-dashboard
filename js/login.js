@@ -1,13 +1,14 @@
 /* ============================================================
-   MAWRED – RFQ Platform | App Logic
+   MAWRED – RFQ Platform | Login Logic
+   Depends on: auth.js (loaded before this script in login.html)
    ============================================================ */
 
 "use strict";
 
 const admin = {
   email: ["admin123@gmail.com"],
-  password: ["123456789"]
-}
+  password: ["123456789"],
+};
 
 /* ── DOM references ─────────────────────────────────────── */
 const emailInput = document.getElementById("email");
@@ -146,14 +147,9 @@ passwordInput.addEventListener("blur", () => {
   }
 });
 
-/* ── Admin Acess ────────────────────────────────────────── */
-function login(email, password) {
-
-  if (email === admin.email[0] && password === admin.password[0]) {
-    window.location.href = "dashboard.html";
-  } else {
-    alert("Access denied");
-  }
+/* ── Admin credentials check ───────────────────────────── */
+function isAdminCredentials(email, password) {
+  return email === admin.email[0] && password === admin.password[0];
 }
 
 /* ── Form submit ────────────────────────────────────────── */
@@ -166,7 +162,7 @@ loginForm.addEventListener("submit", (e) => {
   if (!emailInput.value) {
     showError(emailWrap, emailError, "Email is required");
     valid = false;
-  } else if (!isValidEmail(emailInput.value) ) {
+  } else if (!isValidEmail(emailInput.value)) {
     showError(emailWrap, emailError, "Enter a valid email address");
     valid = false;
   } else {
@@ -213,10 +209,15 @@ loginForm.addEventListener("submit", (e) => {
     const emailVal = emailInput.value.trim();
     const passwordVal = passwordInput.value;
 
-    if (emailVal === admin.email[0] && passwordVal === admin.password[0]) {
-      showToast(
-        `Welcome! Signed in as ${currentRole.charAt(0).toUpperCase() + currentRole.slice(1)}`,
-      );
+    if (isAdminCredentials(emailVal, passwordVal)) {
+      // ── Save session ──────────────────────────────────────
+      saveSession({
+        name: "Ahmad Hassan",
+        role: "Administrator",
+        email: emailVal,
+      });
+
+      showToast("Welcome back, Ahmad Hassan!");
       setTimeout(() => {
         window.location.href = "dashboard.html";
       }, 600);
