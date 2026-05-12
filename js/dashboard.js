@@ -121,16 +121,53 @@ requireAuth();
   const map = {
     "qa-reports": "reports.html",
     "qa-flagged": "requests.html",
-    "qa-invite": "users.html",
-    "qa-generate": "reports.html",
+    "qa-invite":  "users.html",
+    "qa-generate":"reports.html",
   };
   Object.entries(map).forEach(([id, page]) => {
     const btn = document.getElementById(id);
-    if (btn)
-      btn.addEventListener("click", () => {
-        window.location.href = page;
-      });
+    if (btn) btn.addEventListener("click", () => { window.location.href = page; });
   });
+})();
+
+/* ── 10. Requests deep-links from dashboard elements ─────── */
+(function bindRequestsLinks() {
+  /**
+   * Navigate to requests.html, optionally pre-filtering by status.
+   * The requests page reads `location.search` on load to apply the filter.
+   */
+  function goRequests(status) {
+    window.location.href = status
+      ? `requests.html?status=${encodeURIComponent(status)}`
+      : "requests.html";
+  }
+
+  /** Wire a single element: click + keyboard Enter/Space */
+  function wire(id, status) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener("click",    () => goRequests(status));
+    el.addEventListener("keydown",  (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); goRequests(status); }
+    });
+  }
+
+  // Stat cards
+  wire("stat-card-total",     null);
+  wire("stat-card-active",    "OPEN");
+  wire("stat-card-completed", "COMPLETED");
+
+  // Requests Per Day chart panel
+  wire("panel-requests-chart", null);
+
+  // Status Donut legend rows
+  wire("donut-open",       "OPEN");
+  wire("donut-inprogress", "IN_PROGRESS");
+  wire("donut-completed",  "COMPLETED");
+
+  // Recent Activity rows
+  wire("activity-new-request",       null);
+  wire("activity-completed-request", "COMPLETED");
 })();
 
 /* ── 10. Line chart ─────────────────────────────────────── */

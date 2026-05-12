@@ -155,7 +155,7 @@
       <!-- Stat Cards -->
       <div class="stats-grid">
 
-        <div class="stat-card">
+        <div class="stat-card stat-card-link" id="stat-card-total" role="button" tabindex="0" title="View all requests" style="cursor:pointer">
           <div class="stat-icon-wrap green">
             <svg viewBox="0 0 20 20" fill="none"><rect x="3" y="2" width="14" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 7h6M7 10h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
           </div>
@@ -167,7 +167,7 @@
           <span class="stat-value" id="stat-total-requests">1,284</span>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card stat-card-link" id="stat-card-active" role="button" tabindex="0" title="View open requests" style="cursor:pointer">
           <div class="stat-icon-wrap blue">
             <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M10 7v4l2.5 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
           </div>
@@ -179,7 +179,7 @@
           <span class="stat-value" id="stat-active-requests">342</span>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card stat-card-link" id="stat-card-completed" role="button" tabindex="0" title="View completed requests" style="cursor:pointer">
           <div class="stat-icon-wrap green">
             <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M7 10l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
@@ -219,7 +219,7 @@
 
       <!-- Charts Row -->
       <div class="charts-row">
-        <div class="panel">
+        <div class="panel stat-card-link" id="panel-requests-chart" role="button" tabindex="0" title="View all requests" style="cursor:pointer">
           <div class="panel-header">
             <div class="panel-title">Requests Per Day</div>
             <div class="panel-sub">Last 30 days activity</div>
@@ -242,21 +242,21 @@
             <canvas id="status-donut-chart"></canvas>
           </div>
           <div class="donut-legend">
-            <div class="donut-legend-row">
+            <div class="donut-legend-row stat-card-link" id="donut-open" role="button" tabindex="0" title="View open requests" style="cursor:pointer">
               <div class="donut-legend-left">
                 <span class="donut-legend-dot" style="background:#22c55e"></span>
                 <span class="donut-legend-label">Open</span>
               </div>
               <span class="donut-legend-val">342</span>
             </div>
-            <div class="donut-legend-row">
+            <div class="donut-legend-row stat-card-link" id="donut-inprogress" role="button" tabindex="0" title="View in-progress requests" style="cursor:pointer">
               <div class="donut-legend-left">
                 <span class="donut-legend-dot" style="background:#4ade80"></span>
                 <span class="donut-legend-label">In Progress</span>
               </div>
               <span class="donut-legend-val">218</span>
             </div>
-            <div class="donut-legend-row">
+            <div class="donut-legend-row stat-card-link" id="donut-completed" role="button" tabindex="0" title="View completed requests" style="cursor:pointer">
               <div class="donut-legend-left">
                 <span class="donut-legend-dot" style="background:#15803d"></span>
                 <span class="donut-legend-label">Completed</span>
@@ -276,13 +276,13 @@
               <div class="panel-title">Recent Activity</div>
               <div class="panel-sub">Latest events across the platform</div>
             </div>
-            <a href="#" class="view-all-link" id="view-all-activity">
+            <a href="requests.html" class="view-all-link" id="view-all-activity">
               View all
               <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
           </div>
           <div class="activity-list">
-            <div class="activity-item">
+            <div class="activity-item stat-card-link" id="activity-new-request" role="button" tabindex="0" title="View requests" style="cursor:pointer">
               <div class="activity-icon-wrap green">
                 <svg viewBox="0 0 20 20" fill="none"><rect x="3" y="2" width="14" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 7h6M7 10h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               </div>
@@ -312,7 +312,7 @@
               </div>
               <span class="activity-time">38m ago</span>
             </div>
-            <div class="activity-item">
+            <div class="activity-item stat-card-link" id="activity-completed-request" role="button" tabindex="0" title="View completed requests" style="cursor:pointer">
               <div class="activity-icon-wrap green">
                 <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M7 10l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </div>

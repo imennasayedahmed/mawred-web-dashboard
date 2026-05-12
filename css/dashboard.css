@@ -604,7 +604,7 @@ body {
   gap: 12px;
 }
 
-.page-header-left {}
+/* .page-header-left — no extra styles needed */
 
 .page-title {
   font-size: 1.5rem;
@@ -1054,6 +1054,26 @@ body {
   color: var(--green-dark);
   background: var(--green-light);
 }
+
+/* ════════════════════════════════════════════════════════════
+   CLICKABLE DASHBOARD CARDS (→ requests.html deep-links)
+   ════════════════════════════════════════════════════════════ */
+.stat-card-link {
+  transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition);
+}
+
+.stat-card-link:hover {
+  box-shadow: 0 0 0 2px var(--green-primary), 0 6px 24px rgba(34,197,94,0.15);
+  transform: translateY(-2px);
+  border-color: var(--green-primary);
+}
+
+.stat-card-link:focus-visible {
+  outline: 2px solid var(--green-primary);
+  outline-offset: 3px;
+  border-radius: var(--card-radius);
+}
+
 
 /* ════════════════════════════════════════════════════════════
    RESPONSIVE
