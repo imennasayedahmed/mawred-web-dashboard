@@ -121,12 +121,15 @@ requireAuth();
   const map = {
     "qa-reports": "reports.html",
     "qa-flagged": "requests.html",
-    "qa-invite":  "users.html",
-    "qa-generate":"reports.html",
+    "qa-invite": "users.html",
+    "qa-generate": "reports.html",
   };
   Object.entries(map).forEach(([id, page]) => {
     const btn = document.getElementById(id);
-    if (btn) btn.addEventListener("click", () => { window.location.href = page; });
+    if (btn)
+      btn.addEventListener("click", () => {
+        window.location.href = page;
+      });
   });
 })();
 
@@ -146,28 +149,80 @@ requireAuth();
   function wire(id, status) {
     const el = document.getElementById(id);
     if (!el) return;
-    el.addEventListener("click",    () => goRequests(status));
-    el.addEventListener("keydown",  (e) => {
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); goRequests(status); }
+    el.addEventListener("click", () => goRequests(status));
+    el.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        goRequests(status);
+      }
     });
   }
 
   // Stat cards
-  wire("stat-card-total",     null);
-  wire("stat-card-active",    "OPEN");
+  wire("stat-card-total", null);
+  wire("stat-card-active", "OPEN");
   wire("stat-card-completed", "COMPLETED");
 
   // Requests Per Day chart panel
   wire("panel-requests-chart", null);
 
   // Status Donut legend rows
-  wire("donut-open",       "OPEN");
+  wire("donut-open", "OPEN");
   wire("donut-inprogress", "IN_PROGRESS");
-  wire("donut-completed",  "COMPLETED");
+  wire("donut-completed", "COMPLETED");
 
   // Recent Activity rows
-  wire("activity-new-request",       null);
+  wire("activity-new-request", null);
   wire("activity-completed-request", "COMPLETED");
+})();
+
+/* ── 10b. Offers deep-links (no HTML changes required) ───── */
+(function bindOffersLinks() {
+  function goOffers(status) {
+    window.location.href = status
+      ? `offers.html?status=${encodeURIComponent(status)}`
+      : "offers.html";
+  }
+
+  function makeClickable(el, status) {
+    if (!el) return;
+    el.style.cursor = "pointer";
+    el.classList.add("stat-card-link");
+    el.setAttribute("role", "button");
+    el.setAttribute("tabindex", "0");
+    el.addEventListener("click", () => goOffers(status));
+    el.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        goOffers(status);
+      }
+    });
+  }
+
+  // Total Offers stat card — find by its label text
+  document.querySelectorAll(".stat-card").forEach((card) => {
+    const label = card.querySelector(".stat-label");
+    if (label && label.textContent.trim() === "Total Offers") {
+      makeClickable(card, null);
+    }
+  });
+
+  // "Offer submitted" activity row — find by its title text
+  document.querySelectorAll(".activity-item").forEach((item) => {
+    const title = item.querySelector(".activity-title");
+    if (title && title.textContent.trim() === "Offer submitted") {
+      makeClickable(item, null);
+    }
+  });
+
+  // "View Flagged Requests" quick action → offers instead
+  const qaFlagged = document.getElementById("qa-flagged");
+  if (qaFlagged) {
+    // Remove the existing requests.html listener by cloning the node
+    const clone = qaFlagged.cloneNode(true);
+    qaFlagged.parentNode.replaceChild(clone, qaFlagged);
+    clone.addEventListener("click", () => goOffers("flagged"));
+  }
 })();
 
 /* ── 10. Line chart ─────────────────────────────────────── */

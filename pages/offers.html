@@ -15,6 +15,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../css/dashboard.css" />
+    <link rel="stylesheet" href="../css/offers.css" />
   </head>
   <body>
     <div class="app-shell">
@@ -436,6 +437,404 @@
           </div>
         </header>
         <!-- ══════════════ PAGE CONTENT ══════════════ -->
+        <main class="page-content" id="main-content">
+          <!-- Page header -->
+          <div class="page-header">
+            <div class="page-header-left">
+              <h1 class="page-title">Offers</h1>
+              <p class="page-subtitle">
+                Monitor all supplier offers across RFQ requests
+              </p>
+            </div>
+            <div class="page-header-actions">
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 6px;
+                  font-size: 0.8rem;
+                  color: var(--text-muted);
+                "
+              >
+                <svg
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  style="width: 14px; height: 14px"
+                >
+                  <rect
+                    x="2"
+                    y="4"
+                    width="16"
+                    height="14"
+                    rx="2"
+                    stroke="currentColor"
+                    stroke-width="1.4"
+                  />
+                  <path
+                    d="M6 2v3M14 2v3M2 9h16"
+                    stroke="currentColor"
+                    stroke-width="1.4"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                Last updated
+                <strong
+                  id="last-updated-time"
+                  style="color: var(--text-secondary); margin-left: 3px"
+                  >2 min ago</strong
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Anomaly Alert Banner -->
+          <div class="alert-banner" id="anomaly-banner">
+            <div class="alert-icon">
+              <svg viewBox="0 0 20 20" fill="none">
+                <path
+                  d="M10 3v8M10 14v.5"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+                <circle
+                  cx="10"
+                  cy="10"
+                  r="8"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                />
+              </svg>
+            </div>
+            <div class="alert-body">
+              <div class="alert-title">Suspicious Offer Detected</div>
+              <div class="alert-desc">
+                Our anomaly detection flagged 2 offers with prices significantly
+                below market average. Immediate review recommended.
+              </div>
+            </div>
+            <button class="alert-action" id="btn-review-now">
+              <svg viewBox="0 0 20 20" fill="none">
+                <circle
+                  cx="10"
+                  cy="10"
+                  r="3"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                />
+                <path
+                  d="M2 10c2-5 5-7 8-7s6 2 8 7c-2 5-5 7-8 7s-6-2-8-7z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                />
+              </svg>
+              Review Now
+            </button>
+            <button
+              id="btn-dismiss-banner"
+              style="
+                border: none;
+                background: transparent;
+                cursor: pointer;
+                color: var(--text-muted);
+                padding: 4px;
+                margin-left: 4px;
+                display: flex;
+                align-items: center;
+              "
+              title="Dismiss"
+            >
+              <svg
+                viewBox="0 0 20 20"
+                fill="none"
+                style="width: 16px; height: 16px"
+              >
+                <path
+                  d="M5 5l10 10M15 5L5 15"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Stat Cards -->
+          <div class="offers-stats-grid">
+            <!-- Total Offers -->
+            <div class="offers-stat-card">
+              <div class="osc-header">
+                <span class="osc-label">Total Offers</span>
+                <div class="osc-icon green">
+                  <svg viewBox="0 0 20 20" fill="none">
+                    <path
+                      d="M3 10l7-7 7 7v7a1 1 0 01-1 1H4a1 1 0 01-1-1v-7z"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M8 18v-5h4v5"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div class="osc-value" id="stat-total-offers">—</div>
+              <div class="osc-footer">
+                <span class="osc-badge up">
+                  <svg viewBox="0 0 12 12" fill="none">
+                    <path
+                      d="M6 9V3M3 6l3-3 3 3"
+                      stroke="currentColor"
+                      stroke-width="1.4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  +12.4%
+                </span>
+                <span class="osc-sub">vs last month</span>
+              </div>
+            </div>
+
+            <!-- Pending Review -->
+            <div class="offers-stat-card">
+              <div class="osc-header">
+                <span class="osc-label">Pending Review</span>
+                <div class="osc-icon blue">
+                  <svg viewBox="0 0 20 20" fill="none">
+                    <circle
+                      cx="10"
+                      cy="10"
+                      r="7"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                    />
+                    <path
+                      d="M10 7v4l2.5 2.5"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div class="osc-value" id="stat-pending-review">—</div>
+              <div class="osc-footer">
+                <span class="osc-sub" id="stat-today-pending">— today</span>
+              </div>
+            </div>
+
+            <!-- Flagged Offers -->
+            <div class="offers-stat-card">
+              <div class="osc-header">
+                <span class="osc-label">Flagged Offers</span>
+                <div class="osc-icon amber">
+                  <svg viewBox="0 0 20 20" fill="none">
+                    <path
+                      d="M4 3v14M4 3h9l-2 4 2 4H4"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div class="osc-value" id="stat-flagged-offers">—</div>
+              <div class="osc-footer">
+                <span class="osc-badge warn">Needs review</span>
+              </div>
+            </div>
+
+            <!-- Accepted Offers -->
+            <div class="offers-stat-card">
+              <div class="osc-header">
+                <span class="osc-label">Accepted Offers</span>
+                <div class="osc-icon purple">
+                  <svg viewBox="0 0 20 20" fill="none">
+                    <circle
+                      cx="10"
+                      cy="10"
+                      r="7"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                    />
+                    <path
+                      d="M7 10l2 2 4-4"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div class="osc-value" id="stat-accepted-offers">—</div>
+              <div class="osc-footer">
+                <span class="osc-badge up">
+                  <svg viewBox="0 0 12 12" fill="none">
+                    <path
+                      d="M6 9V3M3 6l3-3 3 3"
+                      stroke="currentColor"
+                      stroke-width="1.4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  +8.2%
+                </span>
+                <span class="osc-sub">vs last month</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Toolbar -->
+          <div class="offers-toolbar">
+            <div class="offers-toolbar-left">
+              <!-- Search -->
+              <div class="offers-search">
+                <svg viewBox="0 0 20 20" fill="none">
+                  <circle
+                    cx="8.5"
+                    cy="8.5"
+                    r="5"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  />
+                  <path
+                    d="M13 13l4 4"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                <input
+                  type="search"
+                  id="offer-search"
+                  placeholder="Search by supplier or request…"
+                  aria-label="Search offers"
+                />
+              </div>
+
+              <!-- Status filter -->
+              <div class="offers-filter">
+                <select id="status-filter" aria-label="Filter by status">
+                  <option value="all">All Status</option>
+                  <option value="pending">Pending</option>
+                  <option value="accepted">Accepted</option>
+                  <option value="rejected">Rejected</option>
+                  <option value="flagged">Flagged</option>
+                </select>
+              </div>
+
+              <!-- Request filter -->
+              <div class="offers-filter">
+                <select id="req-filter" aria-label="Filter by request">
+                  <option value="all">All Requests</option>
+                  <!-- Options populated by JS -->
+                </select>
+              </div>
+
+              <!-- More filters -->
+              <button class="btn-more-filters" id="btn-more-filters">
+                <svg viewBox="0 0 20 20" fill="none">
+                  <path
+                    d="M3 5h14M6 10h8M9 15h2"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                More filters
+              </button>
+            </div>
+            <div class="offers-toolbar-right">
+              <!-- Export -->
+              <button class="btn-export-offers" id="btn-export">
+                <svg viewBox="0 0 20 20" fill="none">
+                  <path
+                    d="M10 3v10M6 9l4 4 4-4"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M3 15v1a1 1 0 001 1h12a1 1 0 001-1v-1"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                Export
+              </button>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="table-container">
+            <table class="offers-table" aria-label="Offers list">
+              <thead>
+                <tr>
+                  <th data-sort="supplier" data-label="Supplier Name">
+                    Supplier Name
+                  </th>
+                  <th>Linked Request</th>
+                  <th data-sort="price" data-label="Offered Price">
+                    Offered Price
+                  </th>
+                  <th data-sort="delivery" data-label="Delivery Time">
+                    Delivery Time
+                  </th>
+                  <th data-sort="submitted" data-label="Submitted">
+                    Submitted
+                  </th>
+                  <th data-sort="status" data-label="Status">Status</th>
+                  <th style="width: 80px">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="offers-tbody">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+
+            <!-- Pagination -->
+            <div class="pagination">
+              <span class="page-info" id="page-info">Loading…</span>
+              <div class="page-controls">
+                <button class="page-btn" id="btn-prev" disabled>
+                  <svg viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M10 4L6 8l4 4"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  Prev
+                </button>
+                <div class="page-numbers" id="page-numbers"></div>
+                <button class="page-btn" id="btn-next">
+                  Next
+                  <svg viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M6 4l4 4-4 4"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </main>
       </div>
     </div>
 
