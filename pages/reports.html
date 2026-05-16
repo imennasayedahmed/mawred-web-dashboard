@@ -15,6 +15,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../css/dashboard.css" />
+    <link rel="stylesheet" href="../css/reports.css" />
   </head>
   <body>
     <div class="app-shell">
@@ -436,6 +437,270 @@
           </div>
         </header>
         <!-- ══════════════ PAGE CONTENT ══════════════ -->
+        <main class="page-content" id="main-content">
+          <!-- Page Header -->
+          <div class="reports-header">
+            <div class="reports-header-left">
+              <h1 class="page-title">Reports &amp; Flagged Content</h1>
+              <p class="page-subtitle">
+                Review and act on reported requests, offers, and users
+              </p>
+            </div>
+            <div class="reports-header-actions">
+              <button class="btn-export-reports" id="btn-export-reports">
+                <svg viewBox="0 0 20 20" fill="none">
+                  <path
+                    d="M10 3v10M6 9l4 4 4-4"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M3 15v1a1 1 0 001 1h12a1 1 0 001-1v-1"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                Export
+              </button>
+              <button class="btn-mod-rules" id="btn-mod-rules">
+                <svg viewBox="0 0 20 20" fill="none">
+                  <path
+                    d="M10 2l2.4 4.8L18 7.6l-4 3.9.9 5.5L10 14.5l-4.9 2.5.9-5.5-4-3.9 5.6-.8L10 2z"
+                    stroke="currentColor"
+                    stroke-width="1.4"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                Moderation Rules
+              </button>
+            </div>
+          </div>
+
+          <!-- Tabs -->
+          <div class="reports-tabs">
+            <button class="tab-btn active" data-tab="all">
+              All Reports <span class="tab-count" id="tab-count-all">0</span>
+            </button>
+            <button class="tab-btn" data-tab="flagged-requests">
+              Flagged Requests
+              <span class="tab-count" id="tab-count-requests">0</span>
+            </button>
+            <button class="tab-btn" data-tab="flagged-offers">
+              Flagged Offers
+              <span class="tab-count" id="tab-count-offers">0</span>
+            </button>
+          </div>
+
+          <!-- Filter Bar -->
+          <div class="filter-bar">
+            <div class="filter-search">
+              <svg viewBox="0 0 20 20" fill="none">
+                <circle
+                  cx="8.5"
+                  cy="8.5"
+                  r="5"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                />
+                <path
+                  d="M13 13l4 4"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <input
+                type="search"
+                id="report-search"
+                placeholder="Search by title, reporter, or reason…"
+                aria-label="Search reports"
+              />
+            </div>
+
+            <div class="filter-pill">
+              <svg viewBox="0 0 20 20" fill="none">
+                <path
+                  d="M3 5h14M6 10h8M9 15h2"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <select id="type-filter" aria-label="Filter by type">
+                <option value="all">Type</option>
+                <option value="request">Request</option>
+                <option value="offer">Offer</option>
+                <option value="user">User</option>
+              </select>
+            </div>
+
+            <div class="filter-pill">
+              <svg viewBox="0 0 20 20" fill="none">
+                <circle
+                  cx="10"
+                  cy="10"
+                  r="7"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                />
+                <path
+                  d="M10 7v4l2 2"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <select id="status-filter" aria-label="Filter by status">
+                <option value="all">Status</option>
+                <option value="pending">Pending</option>
+                <option value="resolved">Resolved</option>
+                <option value="dismissed">Dismissed</option>
+              </select>
+            </div>
+
+            <div class="filter-pill">
+              <svg viewBox="0 0 20 20" fill="none">
+                <rect
+                  x="2"
+                  y="4"
+                  width="16"
+                  height="14"
+                  rx="2"
+                  stroke="currentColor"
+                  stroke-width="1.4"
+                />
+                <path
+                  d="M6 2v3M14 2v3M2 9h16"
+                  stroke="currentColor"
+                  stroke-width="1.4"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <select id="date-filter" aria-label="Filter by date range">
+                <option value="7">Last 7 days</option>
+                <option value="30" selected>Last 30 days</option>
+                <option value="90">Last 90 days</option>
+                <option value="all">All time</option>
+              </select>
+            </div>
+
+            <button class="btn-clear-filters" id="btn-clear-filters">
+              <svg viewBox="0 0 20 20" fill="none">
+                <path
+                  d="M6 6l8 8M14 6l-8 8"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
+              Clear filters
+            </button>
+          </div>
+
+          <!-- Report Cards -->
+          <div class="reports-list" id="reports-list">
+            <!-- Populated by JS -->
+          </div>
+
+          <!-- Pagination -->
+          <div class="reports-pagination">
+            <span class="rp-info" id="rp-info">Loading…</span>
+            <div class="rp-controls">
+              <button
+                class="rp-btn"
+                id="rp-btn-prev"
+                disabled
+                aria-label="Previous page"
+              >
+                <svg viewBox="0 0 20 20" fill="none">
+                  <path
+                    d="M12 4l-6 6 6 6"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+              <div id="rp-numbers" style="display: flex; gap: 4px"></div>
+              <button class="rp-btn" id="rp-btn-next" aria-label="Next page">
+                <svg viewBox="0 0 20 20" fill="none">
+                  <path
+                    d="M8 4l6 6-6 6"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- ══════════════ CONFIRM REMOVAL MODAL ══════════════ -->
+    <div
+      class="modal-overlay"
+      id="modal-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
+      <div class="modal-box">
+        <div class="modal-icon">
+          <svg viewBox="0 0 20 20" fill="none">
+            <path
+              d="M4 5h12M8 5V3h4v2M6 5l1 11h6l1-11"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+        <div class="modal-title" id="modal-title">Confirm Removal</div>
+        <div class="modal-desc">
+          Are you sure you want to remove this content? This action will
+          permanently delete the reported item and notify the user. This cannot
+          be undone.
+        </div>
+        <div class="modal-item-preview">
+          <span class="type-tag request" id="modal-preview-type">
+            <svg viewBox="0 0 20 20" fill="none">
+              <path
+                d="M3 17V8l5-5h9v14H3z"
+                stroke="currentColor"
+                stroke-width="1.4"
+                stroke-linejoin="round"
+              />
+            </svg>
+            Request
+          </span>
+          <div class="modal-item-info">
+            <div class="modal-item-name" id="modal-preview-name">—</div>
+            <div class="modal-item-sub" id="modal-preview-sub">—</div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-modal-cancel" id="btn-modal-cancel">Cancel</button>
+          <button class="btn-modal-confirm" id="btn-modal-confirm">
+            <svg viewBox="0 0 20 20" fill="none">
+              <path
+                d="M4 5h12M8 5V3h4v2M6 5l1 11h6l1-11"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            Confirm Removal
+          </button>
+        </div>
       </div>
     </div>
 

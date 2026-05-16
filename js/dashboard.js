@@ -176,53 +176,78 @@ requireAuth();
   wire("activity-completed-request", "COMPLETED");
 })();
 
-/* ── 10b. Offers deep-links (no HTML changes required) ───── */
-(function bindOffersLinks() {
+/* ── 10b. Offers & Reports deep-links (no HTML edits needed) */
+(function bindOffersAndReportsLinks() {
   function goOffers(status) {
     window.location.href = status
       ? `offers.html?status=${encodeURIComponent(status)}`
       : "offers.html";
   }
 
-  function makeClickable(el, status) {
+  function goReports(tab) {
+    window.location.href = tab
+      ? `reports.html?tab=${encodeURIComponent(tab)}`
+      : "reports.html";
+  }
+
+  function makeClickable(el, handler) {
     if (!el) return;
     el.style.cursor = "pointer";
     el.classList.add("stat-card-link");
     el.setAttribute("role", "button");
     el.setAttribute("tabindex", "0");
-    el.addEventListener("click", () => goOffers(status));
+    el.addEventListener("click", handler);
     el.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        goOffers(status);
+        handler();
       }
     });
   }
 
-  // Total Offers stat card — find by its label text
+  // ── Stat cards (found by label text) ─────────────────────
   document.querySelectorAll(".stat-card").forEach((card) => {
     const label = card.querySelector(".stat-label");
-    if (label && label.textContent.trim() === "Total Offers") {
-      makeClickable(card, null);
-    }
+    if (!label) return;
+    const text = label.textContent.trim();
+    if (text === "Total Offers") makeClickable(card, () => goOffers(null));
+    if (text === "Pending Reports") makeClickable(card, () => goReports(null));
   });
 
-  // "Offer submitted" activity row — find by its title text
+  // ── Activity rows (found by title text) ───────────────────
   document.querySelectorAll(".activity-item").forEach((item) => {
     const title = item.querySelector(".activity-title");
-    if (title && title.textContent.trim() === "Offer submitted") {
-      makeClickable(item, null);
-    }
+    if (!title) return;
+    const text = title.textContent.trim();
+    if (text === "Offer submitted") makeClickable(item, () => goOffers(null));
+    if (text === "Report submitted") makeClickable(item, () => goReports(null));
   });
 
-  // "View Flagged Requests" quick action → offers instead
+  // ── Quick actions ──────────────────────────────────────────
+  // qa-reports already wired to reports.html in bindQuickActions();
+  // qa-flagged → override to offers flagged (clone removes old listener)
   const qaFlagged = document.getElementById("qa-flagged");
   if (qaFlagged) {
-    // Remove the existing requests.html listener by cloning the node
     const clone = qaFlagged.cloneNode(true);
     qaFlagged.parentNode.replaceChild(clone, qaFlagged);
     clone.addEventListener("click", () => goOffers("flagged"));
   }
+
+  // qa-generate → reports.html (already mapped in bindQuickActions, just ensure)
+  const qaGenerate = document.getElementById("qa-generate");
+  if (qaGenerate) {
+    const clone = qaGenerate.cloneNode(true);
+    qaGenerate.parentNode.replaceChild(clone, qaGenerate);
+    clone.addEventListener("click", () => goReports(null));
+  }
+
+  // "View all activity" link → reports.html
+  const viewAll = document.getElementById("view-all-activity");
+  if (viewAll)
+    viewAll.addEventListener("click", (e) => {
+      e.preventDefault();
+      goReports(null);
+    });
 })();
 
 /* ── 10. Line chart ─────────────────────────────────────── */
