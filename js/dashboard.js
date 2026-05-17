@@ -176,18 +176,18 @@ requireAuth();
   wire("activity-completed-request", "COMPLETED");
 })();
 
-/* ── 10b. Offers & Reports deep-links (no HTML edits needed) */
-(function bindOffersAndReportsLinks() {
+/* ── 10b. Offers, Reports & Analytics deep-links ─────────── */
+(function bindSecondaryLinks() {
   function goOffers(status) {
     window.location.href = status
       ? `offers.html?status=${encodeURIComponent(status)}`
       : "offers.html";
   }
-
-  function goReports(tab) {
-    window.location.href = tab
-      ? `reports.html?tab=${encodeURIComponent(tab)}`
-      : "reports.html";
+  function goReports() {
+    window.location.href = "reports.html";
+  }
+  function goAnalytics() {
+    window.location.href = "analytics.html";
   }
 
   function makeClickable(el, handler) {
@@ -205,48 +205,50 @@ requireAuth();
     });
   }
 
-  // ── Stat cards (found by label text) ─────────────────────
+  // Stat cards by label text
   document.querySelectorAll(".stat-card").forEach((card) => {
     const label = card.querySelector(".stat-label");
     if (!label) return;
     const text = label.textContent.trim();
     if (text === "Total Offers") makeClickable(card, () => goOffers(null));
-    if (text === "Pending Reports") makeClickable(card, () => goReports(null));
+    if (text === "Pending Reports") makeClickable(card, () => goReports());
   });
 
-  // ── Activity rows (found by title text) ───────────────────
+  // Activity rows by title text
   document.querySelectorAll(".activity-item").forEach((item) => {
     const title = item.querySelector(".activity-title");
     if (!title) return;
     const text = title.textContent.trim();
     if (text === "Offer submitted") makeClickable(item, () => goOffers(null));
-    if (text === "Report submitted") makeClickable(item, () => goReports(null));
+    if (text === "Report submitted") makeClickable(item, () => goReports());
   });
 
-  // ── Quick actions ──────────────────────────────────────────
-  // qa-reports already wired to reports.html in bindQuickActions();
-  // qa-flagged → override to offers flagged (clone removes old listener)
-  const qaFlagged = document.getElementById("qa-flagged");
-  if (qaFlagged) {
-    const clone = qaFlagged.cloneNode(true);
-    qaFlagged.parentNode.replaceChild(clone, qaFlagged);
-    clone.addEventListener("click", () => goOffers("flagged"));
-  }
+  // Requests Per Day chart panel → Analytics
+  document.querySelectorAll(".panel").forEach((panel) => {
+    const sub = panel.querySelector(".panel-sub");
+    if (sub && sub.textContent.includes("activity")) {
+      makeClickable(panel, () => goAnalytics());
+    }
+  });
 
-  // qa-generate → reports.html (already mapped in bindQuickActions, just ensure)
-  const qaGenerate = document.getElementById("qa-generate");
-  if (qaGenerate) {
-    const clone = qaGenerate.cloneNode(true);
-    qaGenerate.parentNode.replaceChild(clone, qaGenerate);
-    clone.addEventListener("click", () => goReports(null));
-  }
+  // Quick actions (clone to replace old listeners)
+  const cloneBtn = (id, handler) => {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+    const clone = btn.cloneNode(true);
+    btn.parentNode.replaceChild(clone, btn);
+    clone.addEventListener("click", handler);
+  };
 
-  // "View all activity" link → reports.html
-  const viewAll = document.getElementById("view-all-activity");
-  if (viewAll)
-    viewAll.addEventListener("click", (e) => {
+  cloneBtn("qa-flagged", () => goOffers("flagged"));
+  cloneBtn("qa-generate", () => goReports());
+
+  // "View all activity" → reports
+  document
+    .getElementById("view-all-activity")
+    ?.addEventListener("click", (e) => {
       e.preventDefault();
-      goReports(null);
+      goReports();
     });
 })();
 

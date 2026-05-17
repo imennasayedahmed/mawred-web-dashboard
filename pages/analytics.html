@@ -15,6 +15,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../css/dashboard.css" />
+    <link rel="stylesheet" href="../css/analytics.css" />
   </head>
   <body>
     <div class="app-shell">
@@ -436,9 +437,349 @@
           </div>
         </header>
         <!-- ══════════════ PAGE CONTENT ══════════════ -->
+        <main class="page-content" id="main-content">
+          <!-- Page Header -->
+          <div class="analytics-header">
+            <div class="analytics-header-left">
+              <h1 class="page-title">Analytics</h1>
+              <span class="live-badge">
+                <span class="live-dot"></span>
+                Live
+              </span>
+            </div>
+            <div class="date-range-group">
+              <button class="date-pill" data-range="7">Last 7 Days</button>
+              <button class="date-pill active" data-range="30">
+                Last 30 Days
+              </button>
+              <button class="date-pill" data-range="90">Last 90 Days</button>
+              <button class="date-pill custom" data-range="custom">
+                <svg viewBox="0 0 20 20" fill="none">
+                  <rect
+                    x="2"
+                    y="4"
+                    width="16"
+                    height="14"
+                    rx="2"
+                    stroke="currentColor"
+                    stroke-width="1.4"
+                  />
+                  <path
+                    d="M6 2v3M14 2v3M2 9h16"
+                    stroke="currentColor"
+                    stroke-width="1.4"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                Custom
+              </button>
+              <button class="btn-export-all" id="btn-export-all">
+                <svg viewBox="0 0 20 20" fill="none">
+                  <path
+                    d="M10 3v10M6 9l4 4 4-4"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M3 15v1a1 1 0 001 1h12a1 1 0 001-1v-1"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                Export All
+              </button>
+            </div>
+          </div>
+
+          <p
+            style="
+              font-size: 0.84rem;
+              color: var(--text-muted);
+              margin-top: -16px;
+              margin-bottom: 20px;
+            "
+          >
+            Platform performance and RFQ activity insights
+          </p>
+
+          <!-- Charts Grid -->
+          <div class="analytics-grid">
+            <!-- ① Requests Per Day -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div>
+                  <div class="chart-card-title">Requests Per Day</div>
+                  <div class="chart-card-sub">
+                    Daily RFQ submissions over the selected range
+                  </div>
+                </div>
+                <div class="chart-card-header-actions">
+                  <button
+                    class="btn-chart-dl"
+                    id="dl-requests"
+                    title="Download chart"
+                  >
+                    <svg viewBox="0 0 20 20" fill="none">
+                      <path
+                        d="M10 3v10M6 9l4 4 4-4"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                      <path
+                        d="M3 15v1a1 1 0 001 1h12a1 1 0 001-1v-1"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div class="chart-kpi">
+                <span class="chart-kpi-value" id="kpi-requests">—</span>
+                <span class="kpi-badge up">
+                  <svg viewBox="0 0 12 12" fill="none">
+                    <path
+                      d="M6 9V3M3 6l3-3 3 3"
+                      stroke="currentColor"
+                      stroke-width="1.4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  +12.4%
+                </span>
+              </div>
+              <div class="chart-canvas-wrap h220">
+                <canvas id="chart-requests"></canvas>
+              </div>
+            </div>
+
+            <!-- ② Offers Per Request Ratio -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div>
+                  <div class="chart-card-title">Offers Per Request Ratio</div>
+                  <div class="chart-card-sub">
+                    Average offers received per request category
+                  </div>
+                </div>
+                <div class="chart-card-header-actions">
+                  <button
+                    class="btn-chart-dl"
+                    id="dl-offers"
+                    title="Download chart"
+                  >
+                    <svg viewBox="0 0 20 20" fill="none">
+                      <path
+                        d="M10 3v10M6 9l4 4 4-4"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                      <path
+                        d="M3 15v1a1 1 0 001 1h12a1 1 0 001-1v-1"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div class="chart-kpi">
+                <span class="chart-kpi-value" id="kpi-offers-avg">—</span>
+                <span class="chart-kpi-avg">avg</span>
+              </div>
+              <div class="chart-canvas-wrap h220">
+                <canvas id="chart-offers"></canvas>
+              </div>
+            </div>
+
+            <!-- ③ Most Active Suppliers -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div>
+                  <div class="chart-card-title">Most Active Suppliers</div>
+                  <div class="chart-card-sub">
+                    Top suppliers by number of offers submitted
+                  </div>
+                </div>
+                <button class="btn-chart-dl" id="dl-suppliers" title="Download">
+                  <svg viewBox="0 0 20 20" fill="none">
+                    <path
+                      d="M10 3v10M6 9l4 4 4-4"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M3 15v1a1 1 0 001 1h12a1 1 0 001-1v-1"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div class="supplier-bar-list" id="supplier-bar-list">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+
+            <!-- ④ Request Status Distribution -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div>
+                  <div class="chart-card-title">
+                    Request Status Distribution
+                  </div>
+                  <div class="chart-card-sub">
+                    Breakdown by current request lifecycle
+                  </div>
+                </div>
+                <button class="btn-chart-dl" id="dl-status" title="Download">
+                  <svg viewBox="0 0 20 20" fill="none">
+                    <path
+                      d="M10 3v10M6 9l4 4 4-4"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M3 15v1a1 1 0 001 1h12a1 1 0 001-1v-1"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div class="status-dist-body">
+                <div class="status-dist-donut">
+                  <canvas id="chart-status"></canvas>
+                </div>
+                <div class="status-legend">
+                  <div class="status-legend-row">
+                    <div class="status-legend-left">
+                      <span class="status-dot open"></span>
+                      <span class="status-legend-label">OPEN</span>
+                    </div>
+                    <div
+                      id="legend-open"
+                      style="display: flex; gap: 10px; align-items: center"
+                    >
+                      <span class="status-legend-count">—</span>
+                      <span class="status-legend-pct">—</span>
+                    </div>
+                  </div>
+                  <div class="status-legend-row">
+                    <div class="status-legend-left">
+                      <span class="status-dot inprogress"></span>
+                      <span class="status-legend-label">IN_PROGRESS</span>
+                    </div>
+                    <div
+                      id="legend-inprogress"
+                      style="display: flex; gap: 10px; align-items: center"
+                    >
+                      <span class="status-legend-count">—</span>
+                      <span class="status-legend-pct">—</span>
+                    </div>
+                  </div>
+                  <div class="status-legend-row">
+                    <div class="status-legend-left">
+                      <span class="status-dot completed"></span>
+                      <span class="status-legend-label">COMPLETED</span>
+                    </div>
+                    <div
+                      id="legend-completed"
+                      style="display: flex; gap: 10px; align-items: center"
+                    >
+                      <span class="status-legend-count">—</span>
+                      <span class="status-legend-pct">—</span>
+                    </div>
+                  </div>
+                  <div class="status-legend-row">
+                    <div class="status-legend-left">
+                      <span class="status-dot archived"></span>
+                      <span class="status-legend-label">ARCHIVED</span>
+                    </div>
+                    <div
+                      id="legend-archived"
+                      style="display: flex; gap: 10px; align-items: center"
+                    >
+                      <span class="status-legend-count">—</span>
+                      <span class="status-legend-pct">—</span>
+                    </div>
+                  </div>
+                  <div class="status-total-row">
+                    <span>Total</span>
+                    <span id="legend-total">—</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ⑤ User Growth Over Time (full width) -->
+            <div class="chart-card full-width">
+              <div class="chart-card-header">
+                <div>
+                  <div class="chart-card-title">User Growth Over Time</div>
+                  <div class="chart-card-sub">
+                    Requesters and Suppliers registered per month
+                  </div>
+                </div>
+                <button
+                  class="btn-chart-dl"
+                  id="dl-user-growth"
+                  title="Download"
+                >
+                  <svg viewBox="0 0 20 20" fill="none">
+                    <path
+                      d="M10 3v10M6 9l4 4 4-4"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M3 15v1a1 1 0 001 1h12a1 1 0 001-1v-1"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div class="user-growth-legend">
+                <div class="legend-item">
+                  <span class="legend-dot" style="background: #22c55e"></span>
+                  Requesters
+                </div>
+                <div class="legend-item">
+                  <span class="legend-dot" style="background: #15803d"></span>
+                  Suppliers
+                </div>
+              </div>
+              <div class="chart-canvas-wrap h260">
+                <canvas id="chart-user-growth"></canvas>
+              </div>
+            </div>
+          </div>
+          <!-- /analytics-grid -->
+        </main>
       </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/analytics.js"></script>
   </body>
