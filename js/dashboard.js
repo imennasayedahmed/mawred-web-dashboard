@@ -49,8 +49,9 @@ requireAuth();
   const profileBtn = document.getElementById("dropdown-profile");
   const settingsBtn = document.getElementById("dropdown-settings");
   if (profileBtn)
-    profileBtn.addEventListener("click", () =>
-      showToast("Profile page coming soon!"),
+    profileBtn.addEventListener(
+      "click",
+      () => (window.location.href = "profile.html"),
     );
   if (settingsBtn)
     settingsBtn.addEventListener("click", () => {

@@ -1,0 +1,1407 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MAWRED | My Profile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/dashboard.css" />
+    <link rel="stylesheet" href="../css/profile.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <!-- ══════════════ SIDEBAR ══════════════ -->
+      <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+        <div class="sidebar-brand">
+          <div class="brand-logo-icon">
+            <svg viewBox="0 0 32 32" fill="none">
+              <path
+                d="M16 4C16 4 8 10 8 18C8 22.4183 11.5817 26 16 26C20.4183 26 24 22.4183 24 18C24 10 16 4 16 4Z"
+                fill="white"
+                opacity="0.9"
+              />
+              <path
+                d="M16 12C16 12 11 16 11 20C11 22.7614 13.2386 25 16 25C18.7614 25 21 22.7614 21 20C21 16 16 12 16 12Z"
+                fill="white"
+                opacity="0.6"
+              />
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">MAWRED</span>
+            <span class="brand-subtitle">RFQ Platform</span>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav" role="navigation">
+          <a href="dashboard.html" class="nav-item" id="nav-dashboard">
+            <svg viewBox="0 0 20 20" fill="none">
+              <rect
+                x="2"
+                y="2"
+                width="7"
+                height="7"
+                rx="1.5"
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+              <rect
+                x="11"
+                y="2"
+                width="7"
+                height="7"
+                rx="1.5"
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+              <rect
+                x="2"
+                y="11"
+                width="7"
+                height="7"
+                rx="1.5"
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+              <rect
+                x="11"
+                y="11"
+                width="7"
+                height="7"
+                rx="1.5"
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+            </svg>
+            Dashboard
+          </a>
+          <a href="requests.html" class="nav-item" id="nav-requests">
+            <svg viewBox="0 0 20 20" fill="none">
+              <rect
+                x="3"
+                y="2"
+                width="14"
+                height="16"
+                rx="2"
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+              <path
+                d="M7 7h6M7 10h4"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+            Requests
+          </a>
+          <a href="offers.html" class="nav-item" id="nav-offers">
+            <svg viewBox="0 0 20 20" fill="none">
+              <path
+                d="M3 10l7-7 7 7v7a1 1 0 01-1 1H4a1 1 0 01-1-1v-7z"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M8 18v-5h4v5"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linejoin="round"
+              />
+            </svg>
+            Offers
+          </a>
+          <a href="users.html" class="nav-item" id="nav-users">
+            <svg viewBox="0 0 20 20" fill="none">
+              <circle
+                cx="8"
+                cy="6"
+                r="3"
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+              <path
+                d="M2 17c0-3.314 2.686-5 6-5"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+              <circle
+                cx="15"
+                cy="12"
+                r="2.5"
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+              <path
+                d="M12 18c0-2 1.343-3 3-3s3 1 3 3"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+            Users
+          </a>
+          <a href="reports.html" class="nav-item" id="nav-reports">
+            <svg viewBox="0 0 20 20" fill="none">
+              <path
+                d="M3 17V8l5-5h9v14H3z"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M7 3v5H3"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M7 11h6M7 14h4"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+            Reports
+          </a>
+          <a href="analytics.html" class="nav-item" id="nav-analytics">
+            <svg viewBox="0 0 20 20" fill="none">
+              <path
+                d="M3 14l4-4 3 3 4-5 3 2"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <rect
+                x="2"
+                y="2"
+                width="16"
+                height="16"
+                rx="2"
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+            </svg>
+            Analytics
+          </a>
+          <a href="settings.html" class="nav-item" id="nav-settings">
+            <svg viewBox="0 0 20 20" fill="none">
+              <circle
+                cx="10"
+                cy="10"
+                r="2.5"
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+              <path
+                d="M10 2v1.5M10 16.5V18M2 10h1.5M16.5 10H18M4.22 4.22l1.06 1.06M14.72 14.72l1.06 1.06M4.22 15.78l1.06-1.06M14.72 5.28l1.06-1.06"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+            Settings
+          </a>
+          <button
+            class="nav-item nav-logout"
+            id="logout-btn"
+            style="margin-top: auto"
+          >
+            <svg viewBox="0 0 20 20" fill="none">
+              <path
+                d="M7 3H4a1 1 0 00-1 1v12a1 1 0 001 1h3"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+              <path
+                d="M13 14l4-4-4-4M17 10H8"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            Sign Out
+          </button>
+        </nav>
+
+        <div class="sidebar-tips">
+          <div class="tips-header">
+            <svg viewBox="0 0 20 20" fill="none">
+              <path
+                d="M10 2a6 6 0 016 6c0 2.5-1.5 4.7-3.5 5.6V15a.5.5 0 01-.5.5h-4A.5.5 0 017 15v-1.4C5 12.7 4 10.5 4 8a6 6 0 016-6z"
+                stroke="currentColor"
+                stroke-width="1.4"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M7.5 18h5"
+                stroke="currentColor"
+                stroke-width="1.4"
+                stroke-linecap="round"
+              />
+            </svg>
+            <span class="tips-label">Pro Tips</span>
+          </div>
+          <p class="tips-body">
+            Keep your profile up to date to ensure accurate audit logs and
+            notifications.
+          </p>
+        </div>
+      </aside>
+
+      <!-- ══════════════ MAIN AREA ══════════════ -->
+      <div class="main-area">
+        <header class="navbar" id="navbar">
+          <div class="navbar-search">
+            <svg viewBox="0 0 20 20" fill="none">
+              <circle
+                cx="8.5"
+                cy="8.5"
+                r="5"
+                stroke="currentColor"
+                stroke-width="1.5"
+              />
+              <path
+                d="M13 13l4 4"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+            <input
+              type="search"
+              class="search-input"
+              id="global-search"
+              placeholder="Search requests, offers, users…"
+              aria-label="Global search"
+            />
+          </div>
+          <div class="navbar-right">
+            <button class="notif-btn" id="notif-btn" aria-label="Notifications">
+              <svg viewBox="0 0 20 20" fill="none">
+                <path
+                  d="M10 2a6 6 0 00-6 6v3l-1.5 2.5h15L16 11V8a6 6 0 00-6-6z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M8 16.5a2 2 0 004 0"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                />
+              </svg>
+              <span class="notif-badge"></span>
+            </button>
+            <div class="user-menu-wrap" id="user-menu-wrap">
+              <div
+                class="user-chip"
+                id="user-chip"
+                tabindex="0"
+                role="button"
+                aria-haspopup="true"
+                aria-expanded="false"
+                aria-label="User menu"
+              >
+                <div class="user-avatar" id="navbar-user-avatar">AH</div>
+                <div class="user-info">
+                  <span class="user-name" id="navbar-user-name"
+                    >Ahmad Hassan</span
+                  >
+                  <span class="user-role" id="navbar-user-role"
+                    >Administrator</span
+                  >
+                </div>
+                <svg
+                  class="user-caret"
+                  id="user-caret"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                >
+                  <path
+                    d="M4 6l4 4 4-4"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+              <div
+                class="user-dropdown"
+                id="user-dropdown"
+                role="menu"
+                aria-label="Account options"
+              >
+                <div class="user-dropdown-header">
+                  <div
+                    class="user-avatar"
+                    id="dropdown-avatar"
+                    style="width: 38px; height: 38px; font-size: 0.8rem"
+                  >
+                    AH
+                  </div>
+                  <div>
+                    <div class="dropdown-name" id="dropdown-name">
+                      Ahmad Hassan
+                    </div>
+                    <div class="dropdown-role" id="dropdown-role">
+                      Administrator
+                    </div>
+                  </div>
+                </div>
+                <div class="user-dropdown-divider"></div>
+                <button class="dropdown-item" id="dropdown-profile">
+                  <svg viewBox="0 0 20 20" fill="none">
+                    <circle
+                      cx="10"
+                      cy="7"
+                      r="3.5"
+                      stroke="currentColor"
+                      stroke-width="1.4"
+                    />
+                    <path
+                      d="M3 18c0-3.866 3.134-6 7-6s7 2.134 7 6"
+                      stroke="currentColor"
+                      stroke-width="1.4"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                  My Profile
+                </button>
+                <button class="dropdown-item" id="dropdown-settings">
+                  <svg viewBox="0 0 20 20" fill="none">
+                    <circle
+                      cx="10"
+                      cy="10"
+                      r="2.5"
+                      stroke="currentColor"
+                      stroke-width="1.4"
+                    />
+                    <path
+                      d="M10 2v1.5M10 16.5V18M2 10h1.5M16.5 10H18M4.22 4.22l1.06 1.06M14.72 14.72l1.06 1.06M4.22 15.78l1.06-1.06M14.72 5.28l1.06-1.06"
+                      stroke="currentColor"
+                      stroke-width="1.4"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                  Settings
+                </button>
+                <div class="user-dropdown-divider"></div>
+                <button
+                  class="dropdown-item dropdown-signout"
+                  id="dropdown-signout"
+                  role="menuitem"
+                >
+                  <svg viewBox="0 0 20 20" fill="none">
+                    <path
+                      d="M7 3H4a1 1 0 00-1 1v12a1 1 0 001 1h3"
+                      stroke="currentColor"
+                      stroke-width="1.4"
+                      stroke-linecap="round"
+                    />
+                    <path
+                      d="M13 14l4-4-4-4M17 10H8"
+                      stroke="currentColor"
+                      stroke-width="1.4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  Sign Out
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- ══════════════ PAGE CONTENT ══════════════ -->
+        <main class="page-content" id="main-content">
+          <!-- Page header -->
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              flex-wrap: wrap;
+              gap: 12px;
+              margin-bottom: 22px;
+            "
+          >
+            <div>
+              <h1 class="page-title">My Profile</h1>
+              <p class="page-subtitle">
+                Manage your account information, security and preferences
+              </p>
+            </div>
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 0.78rem;
+                color: var(--text-muted);
+              "
+            >
+              <span class="online-dot"></span>
+              Online · Last login:
+              <strong
+                id="profile-last-login"
+                style="color: var(--text-secondary); margin-left: 3px"
+                >—</strong
+              >
+            </div>
+          </div>
+
+          <div class="profile-grid">
+            <!-- ══ LEFT: Profile Card ══ -->
+            <div>
+              <div class="profile-card">
+                <div class="profile-card-banner"></div>
+                <div class="profile-card-body">
+                  <div class="profile-avatar-wrap">
+                    <div class="profile-avatar" id="profile-initials">AH</div>
+                    <button
+                      class="profile-avatar-edit"
+                      id="btn-avatar-edit"
+                      title="Change photo"
+                      aria-label="Change profile photo"
+                    >
+                      <svg viewBox="0 0 20 20" fill="none">
+                        <path
+                          d="M13 3l4 4-9 9H4v-4l9-9z"
+                          stroke="currentColor"
+                          stroke-width="1.4"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+
+                  <div class="profile-name" id="profile-name">Ahmad Hassan</div>
+                  <div class="profile-role-badge">
+                    <svg viewBox="0 0 20 20" fill="none">
+                      <path
+                        d="M10 2l2.4 4.8L18 7.6l-4 3.9.9 5.5L10 14.5l-4.9 2.5.9-5.5-4-3.9 5.6-.8L10 2z"
+                        stroke="currentColor"
+                        stroke-width="1.4"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <span id="profile-role-label">Super Admin</span>
+                  </div>
+
+                  <!-- Stats -->
+                  <div class="profile-stats">
+                    <div class="profile-stat">
+                      <span class="profile-stat-value" id="pstat-requests"
+                        >—</span
+                      >
+                      <span class="profile-stat-label">Requests</span>
+                    </div>
+                    <div class="profile-stat">
+                      <span class="profile-stat-value" id="pstat-offers"
+                        >—</span
+                      >
+                      <span class="profile-stat-label">Offers</span>
+                    </div>
+                    <div class="profile-stat">
+                      <span class="profile-stat-value" id="pstat-reports"
+                        >—</span
+                      >
+                      <span class="profile-stat-label">Reports</span>
+                    </div>
+                  </div>
+
+                  <!-- Meta -->
+                  <div class="profile-meta-list">
+                    <div class="profile-meta-row">
+                      <svg viewBox="0 0 20 20" fill="none">
+                        <path
+                          d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"
+                          fill="currentColor"
+                        />
+                        <path
+                          d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                      <a href="mailto:ahmad.hassan@mawred.sa"
+                        >ahmad.hassan@mawred.sa</a
+                      >
+                    </div>
+                    <div class="profile-meta-row">
+                      <svg viewBox="0 0 20 20" fill="none">
+                        <path
+                          d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                      +966 50 123 4567
+                    </div>
+                    <div class="profile-meta-row">
+                      <svg viewBox="0 0 20 20" fill="none">
+                        <path
+                          fill-rule="evenodd"
+                          d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                          clip-rule="evenodd"
+                          fill="currentColor"
+                        />
+                      </svg>
+                      Riyadh, Saudi Arabia
+                    </div>
+                    <div class="profile-meta-row">
+                      <svg viewBox="0 0 20 20" fill="none">
+                        <rect
+                          x="2"
+                          y="4"
+                          width="16"
+                          height="14"
+                          rx="2"
+                          stroke="currentColor"
+                          stroke-width="1.4"
+                        />
+                        <path
+                          d="M6 2v3M14 2v3M2 9h16"
+                          stroke="currentColor"
+                          stroke-width="1.4"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                      Joined <span id="profile-join-date">—</span>
+                    </div>
+                  </div>
+
+                  <!-- Actions -->
+                  <div class="profile-card-actions">
+                    <button
+                      class="btn-profile-primary"
+                      onclick="
+                        document.querySelector('[data-tab=info]').click()
+                      "
+                    >
+                      <svg viewBox="0 0 20 20" fill="none">
+                        <path
+                          d="M13 3l4 4-9 9H4v-4l9-9z"
+                          stroke="currentColor"
+                          stroke-width="1.4"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                      Edit Profile
+                    </button>
+                    <button class="btn-profile-outline" id="btn-download-data">
+                      <svg viewBox="0 0 20 20" fill="none">
+                        <path
+                          d="M10 3v10M6 9l4 4 4-4"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M3 15v1a1 1 0 001 1h12a1 1 0 001-1v-1"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                      Download My Data
+                    </button>
+                    <button class="btn-profile-danger" id="btn-deactivate">
+                      <svg viewBox="0 0 20 20" fill="none">
+                        <path
+                          d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"
+                          fill="currentColor"
+                        />
+                        <path
+                          fill-rule="evenodd"
+                          d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"
+                          clip-rule="evenodd"
+                          fill="currentColor"
+                        />
+                      </svg>
+                      Deactivate Account
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ══ RIGHT: Tabs + Panels ══ -->
+            <div class="profile-right">
+              <!-- Tab bar -->
+              <div class="profile-tabs" role="tablist">
+                <button
+                  class="profile-tab active"
+                  data-tab="info"
+                  role="tab"
+                  aria-selected="true"
+                >
+                  <svg viewBox="0 0 20 20" fill="none">
+                    <circle
+                      cx="10"
+                      cy="7"
+                      r="3.5"
+                      stroke="currentColor"
+                      stroke-width="1.4"
+                    />
+                    <path
+                      d="M3 18c0-3.866 3.134-6 7-6s7 2.134 7 6"
+                      stroke="currentColor"
+                      stroke-width="1.4"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                  Personal Info
+                </button>
+                <button
+                  class="profile-tab"
+                  data-tab="security"
+                  role="tab"
+                  aria-selected="false"
+                >
+                  <svg viewBox="0 0 20 20" fill="none">
+                    <path
+                      d="M10 2l6 3v5c0 4-2.667 6.667-6 8-3.333-1.333-6-4-6-8V5l6-3z"
+                      stroke="currentColor"
+                      stroke-width="1.4"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  Security
+                </button>
+                <button
+                  class="profile-tab"
+                  data-tab="notifications"
+                  role="tab"
+                  aria-selected="false"
+                >
+                  <svg viewBox="0 0 20 20" fill="none">
+                    <path
+                      d="M10 2a6 6 0 00-6 6v3l-1.5 2.5h15L16 11V8a6 6 0 00-6-6z"
+                      stroke="currentColor"
+                      stroke-width="1.4"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M8 16.5a2 2 0 004 0"
+                      stroke="currentColor"
+                      stroke-width="1.4"
+                    />
+                  </svg>
+                  Notifications
+                </button>
+                <button
+                  class="profile-tab"
+                  data-tab="activity"
+                  role="tab"
+                  aria-selected="false"
+                >
+                  <svg viewBox="0 0 20 20" fill="none">
+                    <circle
+                      cx="10"
+                      cy="10"
+                      r="7"
+                      stroke="currentColor"
+                      stroke-width="1.4"
+                    />
+                    <path
+                      d="M10 7v4l2 2"
+                      stroke="currentColor"
+                      stroke-width="1.4"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                  Activity
+                </button>
+              </div>
+
+              <!-- ── Panel: Personal Info ── -->
+              <div class="profile-panel active" id="panel-info">
+                <div class="section-card">
+                  <div class="section-card-header">
+                    <div>
+                      <div class="section-card-title">Personal Information</div>
+                      <div class="section-card-subtitle">
+                        Update your name, contact details and bio
+                      </div>
+                    </div>
+                  </div>
+                  <form id="form-profile-info" novalidate>
+                    <div class="section-card-body">
+                      <div class="form-grid">
+                        <div class="form-group">
+                          <label class="form-label" for="field-first-name"
+                            >First Name <span class="required">*</span></label
+                          >
+                          <input
+                            class="form-input"
+                            id="field-first-name"
+                            type="text"
+                            placeholder="Ahmad"
+                            autocomplete="given-name"
+                          />
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label" for="field-last-name"
+                            >Last Name</label
+                          >
+                          <input
+                            class="form-input"
+                            id="field-last-name"
+                            type="text"
+                            placeholder="Hassan"
+                            autocomplete="family-name"
+                          />
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label" for="field-email"
+                            >Email Address</label
+                          >
+                          <div class="input-icon-wrap">
+                            <svg viewBox="0 0 20 20" fill="none">
+                              <path
+                                d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"
+                                fill="currentColor"
+                              />
+                              <path
+                                d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"
+                                fill="currentColor"
+                              />
+                            </svg>
+                            <input
+                              class="form-input"
+                              id="field-email"
+                              type="email"
+                              placeholder="you@mawred.sa"
+                              autocomplete="email"
+                            />
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label" for="field-phone"
+                            >Phone Number</label
+                          >
+                          <div class="input-icon-wrap">
+                            <svg viewBox="0 0 20 20" fill="none">
+                              <path
+                                d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"
+                                fill="currentColor"
+                              />
+                            </svg>
+                            <input
+                              class="form-input"
+                              id="field-phone"
+                              type="tel"
+                              placeholder="+966 50 000 0000"
+                            />
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label" for="field-department"
+                            >Department</label
+                          >
+                          <input
+                            class="form-input"
+                            id="field-department"
+                            type="text"
+                            placeholder="Platform Operations"
+                          />
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label" for="field-location"
+                            >Location</label
+                          >
+                          <div class="input-icon-wrap">
+                            <svg viewBox="0 0 20 20" fill="none">
+                              <path
+                                fill-rule="evenodd"
+                                d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                                clip-rule="evenodd"
+                                fill="currentColor"
+                              />
+                            </svg>
+                            <input
+                              class="form-input"
+                              id="field-location"
+                              type="text"
+                              placeholder="Riyadh, Saudi Arabia"
+                            />
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label" for="field-timezone"
+                            >Timezone</label
+                          >
+                          <select class="form-select" id="field-timezone">
+                            <option value="Asia/Riyadh">
+                              Asia/Riyadh (GMT+3)
+                            </option>
+                            <option value="Asia/Dubai">
+                              Asia/Dubai (GMT+4)
+                            </option>
+                            <option value="Europe/London">
+                              Europe/London (GMT+0)
+                            </option>
+                            <option value="America/New_York">
+                              America/New York (GMT-5)
+                            </option>
+                            <option value="America/Los_Angeles">
+                              America/Los Angeles (GMT-8)
+                            </option>
+                          </select>
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label" for="field-language"
+                            >Language</label
+                          >
+                          <select class="form-select" id="field-language">
+                            <option value="English">English</option>
+                            <option value="Arabic">Arabic</option>
+                            <option value="French">French</option>
+                          </select>
+                        </div>
+                        <div class="form-group span-2">
+                          <label class="form-label" for="field-bio">Bio</label>
+                          <textarea
+                            class="form-textarea"
+                            id="field-bio"
+                            placeholder="Tell us a bit about yourself…"
+                          ></textarea>
+                          <span class="form-hint"
+                            >Brief description shown on your admin
+                            profile.</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-actions">
+                      <button
+                        type="button"
+                        class="btn-cancel-form"
+                        id="btn-cancel-info"
+                      >
+                        Discard
+                      </button>
+                      <button type="submit" class="btn-save">
+                        <svg viewBox="0 0 20 20" fill="none">
+                          <path
+                            d="M4 10l4 4 8-8"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                        Save Changes
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+
+              <!-- ── Panel: Security ── -->
+              <div class="profile-panel" id="panel-security">
+                <!-- Change password -->
+                <div class="section-card">
+                  <div class="section-card-header">
+                    <div>
+                      <div class="section-card-title">Change Password</div>
+                      <div class="section-card-subtitle">
+                        Use a strong password of at least 8 characters
+                      </div>
+                    </div>
+                  </div>
+                  <form id="form-password" novalidate>
+                    <div class="section-card-body">
+                      <div class="form-grid single">
+                        <div class="form-group">
+                          <label class="form-label" for="field-current-password"
+                            >Current Password</label
+                          >
+                          <input
+                            class="form-input"
+                            id="field-current-password"
+                            type="password"
+                            placeholder="Enter current password"
+                            autocomplete="current-password"
+                          />
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label" for="field-new-password"
+                            >New Password</label
+                          >
+                          <input
+                            class="form-input"
+                            id="field-new-password"
+                            type="password"
+                            placeholder="Enter new password"
+                            autocomplete="new-password"
+                          />
+                          <div class="password-strength">
+                            <div class="strength-bar">
+                              <div class="strength-seg"></div>
+                              <div class="strength-seg"></div>
+                              <div class="strength-seg"></div>
+                              <div class="strength-seg"></div>
+                            </div>
+                            <span
+                              class="strength-label"
+                              id="strength-label"
+                            ></span>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label" for="field-confirm-password"
+                            >Confirm New Password</label
+                          >
+                          <input
+                            class="form-input"
+                            id="field-confirm-password"
+                            type="password"
+                            placeholder="Re-enter new password"
+                            autocomplete="new-password"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-actions">
+                      <button type="submit" class="btn-save">
+                        <svg viewBox="0 0 20 20" fill="none">
+                          <path
+                            d="M10 2l6 3v5c0 4-2.667 6.667-6 8-3.333-1.333-6-4-6-8V5l6-3z"
+                            stroke="currentColor"
+                            stroke-width="1.4"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                        Update Password
+                      </button>
+                    </div>
+                  </form>
+                </div>
+
+                <!-- Active sessions -->
+                <div class="section-card">
+                  <div class="section-card-header">
+                    <div>
+                      <div class="section-card-title">Active Sessions</div>
+                      <div class="section-card-subtitle">
+                        Devices currently signed in to your account
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="section-card-body"
+                    style="padding-top: 8px; padding-bottom: 8px"
+                  >
+                    <div class="session-row">
+                      <div class="session-icon">
+                        <svg viewBox="0 0 20 20" fill="none">
+                          <rect
+                            x="2"
+                            y="3"
+                            width="16"
+                            height="12"
+                            rx="2"
+                            stroke="currentColor"
+                            stroke-width="1.4"
+                          />
+                          <path
+                            d="M6 19h8M10 15v4"
+                            stroke="currentColor"
+                            stroke-width="1.4"
+                            stroke-linecap="round"
+                          />
+                        </svg>
+                      </div>
+                      <div class="session-info">
+                        <div class="session-name">Chrome on Windows</div>
+                        <div class="session-meta">
+                          Riyadh, SA · 192.168.1.45 · Active now
+                        </div>
+                      </div>
+                      <span class="session-current">● This device</span>
+                    </div>
+                    <div class="session-row">
+                      <div class="session-icon">
+                        <svg viewBox="0 0 20 20" fill="none">
+                          <rect
+                            x="5"
+                            y="1"
+                            width="10"
+                            height="18"
+                            rx="2"
+                            stroke="currentColor"
+                            stroke-width="1.4"
+                          />
+                          <circle cx="10" cy="15" r="1" fill="currentColor" />
+                        </svg>
+                      </div>
+                      <div class="session-info">
+                        <div class="session-name">Safari on iPhone</div>
+                        <div class="session-meta">
+                          Riyadh, SA · 10.0.0.12 · 2 hours ago
+                        </div>
+                      </div>
+                      <button class="btn-revoke">Revoke</button>
+                    </div>
+                    <div class="session-row">
+                      <div class="session-icon">
+                        <svg viewBox="0 0 20 20" fill="none">
+                          <rect
+                            x="2"
+                            y="3"
+                            width="16"
+                            height="12"
+                            rx="2"
+                            stroke="currentColor"
+                            stroke-width="1.4"
+                          />
+                          <path
+                            d="M6 19h8M10 15v4"
+                            stroke="currentColor"
+                            stroke-width="1.4"
+                            stroke-linecap="round"
+                          />
+                        </svg>
+                      </div>
+                      <div class="session-info">
+                        <div class="session-name">Firefox on MacOS</div>
+                        <div class="session-meta">
+                          Jeddah, SA · 172.16.0.8 · Yesterday
+                        </div>
+                      </div>
+                      <button class="btn-revoke">Revoke</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ── Panel: Notifications ── -->
+              <div class="profile-panel" id="panel-notifications">
+                <div class="section-card">
+                  <div class="section-card-header">
+                    <div>
+                      <div class="section-card-title">Email Notifications</div>
+                      <div class="section-card-subtitle">
+                        Choose what emails you want to receive
+                      </div>
+                    </div>
+                  </div>
+                  <div class="section-card-body">
+                    <div class="toggle-row">
+                      <div class="toggle-info">
+                        <div class="toggle-label">New Request Submitted</div>
+                        <div class="toggle-desc">
+                          Get notified when a new RFQ request is submitted on
+                          the platform
+                        </div>
+                      </div>
+                      <label class="toggle-switch"
+                        ><input type="checkbox" checked /><span
+                          class="toggle-track"
+                        ></span
+                      ></label>
+                    </div>
+                    <div class="toggle-row">
+                      <div class="toggle-info">
+                        <div class="toggle-label">Offer Received</div>
+                        <div class="toggle-desc">
+                          Receive an email when a supplier submits an offer on
+                          any request
+                        </div>
+                      </div>
+                      <label class="toggle-switch"
+                        ><input type="checkbox" checked /><span
+                          class="toggle-track"
+                        ></span
+                      ></label>
+                    </div>
+                    <div class="toggle-row">
+                      <div class="toggle-info">
+                        <div class="toggle-label">Report Flagged</div>
+                        <div class="toggle-desc">
+                          Alert me when content is reported or flagged for
+                          review
+                        </div>
+                      </div>
+                      <label class="toggle-switch"
+                        ><input type="checkbox" checked /><span
+                          class="toggle-track"
+                        ></span
+                      ></label>
+                    </div>
+                    <div class="toggle-row">
+                      <div class="toggle-info">
+                        <div class="toggle-label">Weekly Analytics Digest</div>
+                        <div class="toggle-desc">
+                          Receive a weekly summary of platform performance and
+                          activity
+                        </div>
+                      </div>
+                      <label class="toggle-switch"
+                        ><input type="checkbox" /><span
+                          class="toggle-track"
+                        ></span
+                      ></label>
+                    </div>
+                    <div class="toggle-row">
+                      <div class="toggle-info">
+                        <div class="toggle-label">System Alerts</div>
+                        <div class="toggle-desc">
+                          Critical platform alerts, downtime notices and
+                          security warnings
+                        </div>
+                      </div>
+                      <label class="toggle-switch"
+                        ><input type="checkbox" checked /><span
+                          class="toggle-track"
+                        ></span
+                      ></label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="section-card">
+                  <div class="section-card-header">
+                    <div>
+                      <div class="section-card-title">In-App Notifications</div>
+                      <div class="section-card-subtitle">
+                        Control what appears in your notification bell
+                      </div>
+                    </div>
+                  </div>
+                  <div class="section-card-body">
+                    <div class="toggle-row">
+                      <div class="toggle-info">
+                        <div class="toggle-label">Status Changes</div>
+                        <div class="toggle-desc">
+                          Notify me when a request or offer status is updated
+                        </div>
+                      </div>
+                      <label class="toggle-switch"
+                        ><input type="checkbox" checked /><span
+                          class="toggle-track"
+                        ></span
+                      ></label>
+                    </div>
+                    <div class="toggle-row">
+                      <div class="toggle-info">
+                        <div class="toggle-label">User Registrations</div>
+                        <div class="toggle-desc">
+                          Alert me when new users register on the platform
+                        </div>
+                      </div>
+                      <label class="toggle-switch"
+                        ><input type="checkbox" /><span
+                          class="toggle-track"
+                        ></span
+                      ></label>
+                    </div>
+                    <div class="toggle-row">
+                      <div class="toggle-info">
+                        <div class="toggle-label">Moderation Actions</div>
+                        <div class="toggle-desc">
+                          Show alerts when a report is resolved or content
+                          removed
+                        </div>
+                      </div>
+                      <label class="toggle-switch"
+                        ><input type="checkbox" checked /><span
+                          class="toggle-track"
+                        ></span
+                      ></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ── Panel: Activity ── -->
+              <div class="profile-panel" id="panel-activity">
+                <div class="section-card">
+                  <div class="section-card-header">
+                    <div>
+                      <div class="section-card-title">Recent Activity</div>
+                      <div class="section-card-subtitle">
+                        Your last actions across the platform
+                      </div>
+                    </div>
+                  </div>
+                  <div class="activity-feed">
+                    <div class="activity-feed-item">
+                      <div class="act-icon green">
+                        <svg viewBox="0 0 20 20" fill="none">
+                          <path
+                            d="M4 10l4 4 8-8"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                      </div>
+                      <div class="act-body">
+                        <div class="act-title">
+                          Request REQ-2847 status updated to In Progress
+                        </div>
+                        <div class="act-desc">
+                          Hydraulic Pump Seals – Unit 7
+                        </div>
+                      </div>
+                      <div class="act-time">2h ago</div>
+                    </div>
+                    <div class="activity-feed-item">
+                      <div class="act-icon red">
+                        <svg viewBox="0 0 20 20" fill="none">
+                          <path
+                            d="M4 5h12M8 5V3h4v2M6 5l1 11h6l1-11"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                      </div>
+                      <div class="act-body">
+                        <div class="act-title">Report RPT-2847 removed</div>
+                        <div class="act-desc">
+                          Bulk supply of medical-grade N95 masks — content
+                          removed after review
+                        </div>
+                      </div>
+                      <div class="act-time">5h ago</div>
+                    </div>
+                    <div class="activity-feed-item">
+                      <div class="act-icon amber">
+                        <svg viewBox="0 0 20 20" fill="none">
+                          <path
+                            d="M10 3v8M10 14v.5"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                          />
+                          <circle
+                            cx="10"
+                            cy="10"
+                            r="8"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                          />
+                        </svg>
+                      </div>
+                      <div class="act-body">
+                        <div class="act-title">
+                          Warning sent to @omar.khalid
+                        </div>
+                        <div class="act-desc">
+                          Premium office furniture supply — misleading content
+                          warning issued
+                        </div>
+                      </div>
+                      <div class="act-time">Yesterday</div>
+                    </div>
+                    <div class="activity-feed-item">
+                      <div class="act-icon blue">
+                        <svg viewBox="0 0 20 20" fill="none">
+                          <circle
+                            cx="10"
+                            cy="7"
+                            r="3.5"
+                            stroke="currentColor"
+                            stroke-width="1.4"
+                          />
+                          <path
+                            d="M3 18c0-3.866 3.134-6 7-6s7 2.134 7 6"
+                            stroke="currentColor"
+                            stroke-width="1.4"
+                            stroke-linecap="round"
+                          />
+                        </svg>
+                      </div>
+                      <div class="act-body">
+                        <div class="act-title">
+                          New user approved: Gulf Trading LLC
+                        </div>
+                        <div class="act-desc">
+                          Supplier account verified and activated
+                        </div>
+                      </div>
+                      <div class="act-time">Mar 13</div>
+                    </div>
+                    <div class="activity-feed-item">
+                      <div class="act-icon purple">
+                        <svg viewBox="0 0 20 20" fill="none">
+                          <path
+                            d="M3 14l4-4 3 3 4-5 3 2"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                          <rect
+                            x="2"
+                            y="2"
+                            width="16"
+                            height="16"
+                            rx="2"
+                            stroke="currentColor"
+                            stroke-width="1.4"
+                          />
+                        </svg>
+                      </div>
+                      <div class="act-body">
+                        <div class="act-title">Analytics report exported</div>
+                        <div class="act-desc">
+                          Last 30 days platform data exported as CSV
+                        </div>
+                      </div>
+                      <div class="act-time">Mar 12</div>
+                    </div>
+                    <div class="activity-feed-item">
+                      <div class="act-icon green">
+                        <svg viewBox="0 0 20 20" fill="none">
+                          <path
+                            d="M10 2l6 3v5c0 4-2.667 6.667-6 8-3.333-1.333-6-4-6-8V5l6-3z"
+                            stroke="currentColor"
+                            stroke-width="1.4"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                      </div>
+                      <div class="act-body">
+                        <div class="act-title">
+                          Password changed successfully
+                        </div>
+                        <div class="act-desc">
+                          Security update from Chrome on Windows · Riyadh, SA
+                        </div>
+                      </div>
+                      <div class="act-time">Mar 10</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /profile-right -->
+          </div>
+          <!-- /profile-grid -->
+        </main>
+      </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/profile.js"></script>
+  </body>
+</html>

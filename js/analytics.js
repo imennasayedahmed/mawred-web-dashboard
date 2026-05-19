@@ -541,11 +541,9 @@ document.addEventListener("DOMContentLoaded", () => {
   document
     .getElementById("dropdown-signout")
     ?.addEventListener("click", logout);
-  document
-    .getElementById("dropdown-profile")
-    ?.addEventListener("click", () =>
-      showToast("Profile page coming soon!", "warning"),
-    );
+  document.getElementById("dropdown-profile")?.addEventListener("click", () => {
+    window.location.href = "profile.html";
+  });
   document
     .getElementById("dropdown-settings")
     ?.addEventListener("click", () => {

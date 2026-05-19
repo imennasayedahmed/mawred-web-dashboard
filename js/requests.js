@@ -493,6 +493,34 @@ document.addEventListener("DOMContentLoaded", () => {
     .getElementById("dropdown-signout")
     ?.addEventListener("click", logout);
 
+  /* User menu dropdown */
+  const chip = document.getElementById("user-chip");
+  const dropdown = document.getElementById("user-dropdown");
+  const caret = document.getElementById("user-caret");
+  chip?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const open = dropdown.classList.toggle("open");
+    chip.setAttribute("aria-expanded", open);
+    if (caret) caret.style.transform = open ? "rotate(180deg)" : "";
+  });
+  document.addEventListener("click", () => {
+    dropdown?.classList.remove("open");
+    chip?.setAttribute("aria-expanded", "false");
+    if (caret) caret.style.transform = "";
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") dropdown?.classList.remove("open");
+  });
+
+  document.getElementById("dropdown-profile")?.addEventListener("click", () => {
+    window.location.href = "profile.html";
+  });
+  document
+    .getElementById("dropdown-settings")
+    ?.addEventListener("click", () => {
+      window.location.href = "settings.html";
+    });
+
   /* Initial render */
   refresh();
 });

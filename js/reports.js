@@ -749,7 +749,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .getElementById("dropdown-signout")
     ?.addEventListener("click", logout);
   document.getElementById("dropdown-profile")?.addEventListener("click", () => {
-    showToast("Profile page coming soon!", "warning");
+    window.location.href = "profile.html";
   });
   document
     .getElementById("dropdown-settings")

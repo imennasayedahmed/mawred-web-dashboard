@@ -506,6 +506,9 @@ document.addEventListener("DOMContentLoaded", () => {
   document
     .getElementById("dropdown-signout")
     ?.addEventListener("click", logout);
+  document.getElementById("dropdown-profile")?.addEventListener("click", () => {
+    window.location.href = "profile.html";
+  });
 
   /* Keyboard: Escape closes any open dropdown */
   document.addEventListener("keydown", (e) => {
