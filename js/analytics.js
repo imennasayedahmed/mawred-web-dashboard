@@ -1,10 +1,5 @@
 /* ============================================================
-   MAWRED – RFQ Platform | Analytics Page Logic
-   Charts: Requests/Day line, Offers/Category bar,
-           Most Active Suppliers bars, Status Distribution donut,
-           User Growth dual-line
-   Features: date range toggle, live badge, chart download,
-             export all, user menu, logout, toast
+   MAWRED – RFQ Platform | Analytics Page
    ============================================================ */
 
 "use strict";
@@ -69,7 +64,6 @@ function showToast(message, type = "success") {
   toastTimer = setTimeout(() => toast.classList.remove("show"), 3200);
 }
 
-
 /* ── 6. Chart instances (kept for update/destroy) ─────────── */
 const CHARTS = {};
 
@@ -85,23 +79,46 @@ function buildUserGrowthChart() {
   const labels = [];
   for (let i = 9; i >= 0; i--) {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    labels.push(d.toLocaleDateString("en-EG", { month: "short", timeZone: "Africa/Cairo" }));
+    labels.push(
+      d.toLocaleDateString("en-EG", {
+        month: "short",
+        timeZone: "Africa/Cairo",
+      }),
+    );
   }
 
   let requesters = Array(10).fill(0);
-  let suppliers  = Array(10).fill(0);
+  let suppliers = Array(10).fill(0);
 
   if (liveUsers && liveUsers.length > 0) {
     for (let i = 9; i >= 0; i--) {
-      const d = new Date(now.getFullYear(), now.getMonth() - i + 1, 0, 23, 59, 59);
-      requesters[9 - i] = liveUsers.filter(u => {
+      const d = new Date(
+        now.getFullYear(),
+        now.getMonth() - i + 1,
+        0,
+        23,
+        59,
+        59,
+      );
+      requesters[9 - i] = liveUsers.filter((u) => {
         const role = (u.role || "").toLowerCase();
-        const created = u.createdAt ? (typeof u.createdAt.toDate === "function" ? u.createdAt.toDate() : new Date(u.createdAt)) : new Date(0);
-        return (role === "requester" || role === "customer" || role === "client") && created <= d;
+        const created = u.createdAt
+          ? typeof u.createdAt.toDate === "function"
+            ? u.createdAt.toDate()
+            : new Date(u.createdAt)
+          : new Date(0);
+        return (
+          (role === "requester" || role === "customer" || role === "client") &&
+          created <= d
+        );
       }).length;
-      suppliers[9 - i] = liveUsers.filter(u => {
+      suppliers[9 - i] = liveUsers.filter((u) => {
         const role = (u.role || "").toLowerCase();
-        const created = u.createdAt ? (typeof u.createdAt.toDate === "function" ? u.createdAt.toDate() : new Date(u.createdAt)) : new Date(0);
+        const created = u.createdAt
+          ? typeof u.createdAt.toDate === "function"
+            ? u.createdAt.toDate()
+            : new Date(u.createdAt)
+          : new Date(0);
         return (role === "supplier" || role === "vendor") && created <= d;
       }).length;
     }
@@ -177,7 +194,8 @@ let liveUsers = [];
 let activeRange = "30";
 
 async function loadAnalyticsData() {
-  if (typeof getRequests !== "function" || typeof getOffers !== "function") return;
+  if (typeof getRequests !== "function" || typeof getOffers !== "function")
+    return;
   try {
     liveRequests = await getRequests();
     liveOffers = await getOffers();
@@ -199,9 +217,13 @@ function applyDateRange(range) {
   // Filter requests/offers by selected date range
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - days);
-  
-  const filteredReqs = liveRequests.filter(r => new Date(r.created) >= cutoff);
-  const filteredOffers = liveOffers.filter(o => new Date(o.submitted) >= cutoff);
+
+  const filteredReqs = liveRequests.filter(
+    (r) => new Date(r.created) >= cutoff,
+  );
+  const filteredOffers = liveOffers.filter(
+    (o) => new Date(o.submitted) >= cutoff,
+  );
 
   // 1. Build requests per day chart dynamically
   buildRequestsChart(days, filteredReqs);
@@ -236,25 +258,41 @@ function buildRequestsChart(days, filteredReqs) {
     for (let i = days - 1; i >= 0; i--) {
       const d = new Date(today);
       d.setDate(today.getDate() - i);
-      const dateStr = d.toLocaleDateString("en-EG", { month: "short", day: "numeric", timeZone: "Africa/Cairo" });
+      const dateStr = d.toLocaleDateString("en-EG", {
+        month: "short",
+        day: "numeric",
+        timeZone: "Africa/Cairo",
+      });
       counts[dateStr] = 0;
     }
 
-    filteredReqs.forEach(r => {
-      const dateStr = new Date(r.created).toLocaleDateString("en-EG", { month: "short", day: "numeric", timeZone: "Africa/Cairo" });
+    filteredReqs.forEach((r) => {
+      const dateStr = new Date(r.created).toLocaleDateString("en-EG", {
+        month: "short",
+        day: "numeric",
+        timeZone: "Africa/Cairo",
+      });
       if (dateStr in counts) counts[dateStr]++;
     });
 
     for (let i = days - 1; i >= 0; i -= step) {
       const d = new Date(today);
       d.setDate(today.getDate() - i);
-      const dateStr = d.toLocaleDateString("en-EG", { month: "short", day: "numeric", timeZone: "Africa/Cairo" });
+      const dateStr = d.toLocaleDateString("en-EG", {
+        month: "short",
+        day: "numeric",
+        timeZone: "Africa/Cairo",
+      });
       labels.push(dateStr);
       let sum = 0;
       for (let s = 0; s < step; s++) {
         const subD = new Date(d);
         subD.setDate(d.getDate() + s);
-        const subStr = subD.toLocaleDateString("en-EG", { month: "short", day: "numeric", timeZone: "Africa/Cairo" });
+        const subStr = subD.toLocaleDateString("en-EG", {
+          month: "short",
+          day: "numeric",
+          timeZone: "Africa/Cairo",
+        });
         sum += counts[subStr] || 0;
       }
       data.push(sum);
@@ -266,13 +304,22 @@ function buildRequestsChart(days, filteredReqs) {
     for (let i = days - 1; i >= 0; i -= step) {
       const d = new Date(today);
       d.setDate(today.getDate() - i);
-      labels.push(d.toLocaleDateString("en-EG", { month: "short", day: "numeric", timeZone: "Africa/Cairo" }));
+      labels.push(
+        d.toLocaleDateString("en-EG", {
+          month: "short",
+          day: "numeric",
+          timeZone: "Africa/Cairo",
+        }),
+      );
       data.push(0);
     }
   }
 
   const kpiEl = document.getElementById("kpi-requests");
-  if (kpiEl) kpiEl.textContent = filteredReqs ? filteredReqs.length.toLocaleString("en-EG") : "0";
+  if (kpiEl)
+    kpiEl.textContent = filteredReqs
+      ? filteredReqs.length.toLocaleString("en-EG")
+      : "0";
 
   CHARTS.requests = new Chart(ctx, {
     type: "line",
@@ -339,8 +386,8 @@ function buildOffersChart(filteredOffers) {
 
   if (liveOffers.length > 0 && liveRequests.length > 0) {
     const categoryCounts = {};
-    filteredOffers.forEach(o => {
-      const req = liveRequests.find(r => r.id === o.reqId);
+    filteredOffers.forEach((o) => {
+      const req = liveRequests.find((r) => r.id === o.reqId);
       const cat = req ? req.category : "General";
       categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
     });
@@ -348,8 +395,8 @@ function buildOffersChart(filteredOffers) {
       .map(([name, count]) => ({ name, count }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 6);
-    categories = sorted.map(x => x.name);
-    data = sorted.map(x => x.count);
+    categories = sorted.map((x) => x.name);
+    data = sorted.map((x) => x.count);
     const totalRequests = liveRequests.length || 1;
     const avgOffers = (filteredOffers.length / totalRequests).toFixed(1);
     const avgEl = document.getElementById("kpi-offers-avg");
@@ -369,7 +416,14 @@ function buildOffersChart(filteredOffers) {
       datasets: [
         {
           data,
-          backgroundColor: ["#22c55e", "#4ade80", "#16a34a", "#22c55e", "#4ade80", "#86efac"],
+          backgroundColor: [
+            "#22c55e",
+            "#4ade80",
+            "#16a34a",
+            "#22c55e",
+            "#4ade80",
+            "#86efac",
+          ],
           borderRadius: 5,
           borderSkipped: false,
         },
@@ -412,7 +466,7 @@ function renderSupplierBars(filteredOffers) {
   let sortedSuppliers = [];
   if (liveOffers.length > 0) {
     const counts = {};
-    filteredOffers.forEach(o => {
+    filteredOffers.forEach((o) => {
       const name = o.supplier?.name || "Unknown Supplier";
       counts[name] = (counts[name] || 0) + 1;
     });
@@ -451,9 +505,9 @@ function buildStatusChart(filteredReqs) {
   if (CHARTS.status) CHARTS.status.destroy();
 
   let dist = { open: 0, inprogress: 0, completed: 0, archived: 0 };
-  
+
   if (liveRequests.length > 0) {
-    filteredReqs.forEach(r => {
+    filteredReqs.forEach((r) => {
       const s = (r.status || "").toUpperCase();
       if (s === "OPEN") dist.open++;
       else if (s === "IN_PROGRESS") dist.inprogress++;
@@ -463,7 +517,7 @@ function buildStatusChart(filteredReqs) {
   }
 
   const total = dist.open + dist.inprogress + dist.completed + dist.archived;
-  const pct = (v) => total > 0 ? Math.round((v / total) * 100) : 0;
+  const pct = (v) => (total > 0 ? Math.round((v / total) * 100) : 0);
 
   // Update legend
   const setLegend = (id, count, p) => {
@@ -535,13 +589,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const _u = getUser();
   if (_u) {
     const _ini = getInitials(_u.name || "Admin");
-    const _set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-    _set("navbar-user-name",   _u.name || "Admin");
-    _set("navbar-user-role",   _u.role || "Administrator");
+    const _set = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    };
+    _set("navbar-user-name", _u.name || "Admin");
+    _set("navbar-user-role", _u.role || "Administrator");
     _set("navbar-user-avatar", _ini);
-    _set("dropdown-name",      _u.name || "Admin");
-    _set("dropdown-role",      _u.role || "Administrator");
-    _set("dropdown-avatar",    _ini);
+    _set("dropdown-name", _u.name || "Admin");
+    _set("dropdown-role", _u.role || "Administrator");
+    _set("dropdown-avatar", _ini);
   }
 
   /* Date range pills */
@@ -620,7 +677,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("dropdown-profile")?.addEventListener("click", () => {
     window.location.href = "profile.html";
   });
-
 
   // Load live data
   loadAnalyticsData().then(() => {

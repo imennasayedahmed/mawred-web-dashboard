@@ -1,5 +1,5 @@
 /* ============================================================
-   MAWRED – RFQ Platform | Dashboard Logic
+   MAWRED – RFQ Platform | Dashboard
    ============================================================ */
 
 "use strict";
@@ -38,9 +38,9 @@ requireAuth();
 /* ── 4. Dropdown toggle + nav links ─────────────────────── */
 (function bindDropdown() {
   // ── User chip toggle ──────────────────────────────────
-  const chip     = document.getElementById("user-chip");
+  const chip = document.getElementById("user-chip");
   const dropdown = document.getElementById("user-dropdown");
-  const caret    = document.getElementById("user-caret");
+  const caret = document.getElementById("user-caret");
 
   chip?.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -62,11 +62,11 @@ requireAuth();
   if (user) {
     const ini = getInitials(user.name || "Admin");
     const dAvatar = document.getElementById("dropdown-avatar");
-    const dName   = document.getElementById("dropdown-name");
-    const dRole   = document.getElementById("dropdown-role");
+    const dName = document.getElementById("dropdown-name");
+    const dRole = document.getElementById("dropdown-role");
     if (dAvatar) dAvatar.textContent = ini;
-    if (dName)   dName.textContent   = user.name || "Admin";
-    if (dRole)   dRole.textContent   = user.role || "Administrator";
+    if (dName) dName.textContent = user.name || "Admin";
+    if (dRole) dRole.textContent = user.role || "Administrator";
   }
 
   // ── Sign out ──────────────────────────────────────────
@@ -78,7 +78,10 @@ requireAuth();
   // ── Profile quick link ───────────────────────────────
   const profileBtn = document.getElementById("dropdown-profile");
   if (profileBtn)
-    profileBtn.addEventListener("click", () => (window.location.href = "profile.html"));
+    profileBtn.addEventListener(
+      "click",
+      () => (window.location.href = "profile.html"),
+    );
 })();
 
 /* ── 5. Global search (placeholder – extend as needed) ─── */
@@ -280,22 +283,31 @@ let requestsLineChart = null;
 let statusDonutChart = null;
 
 async function loadDashboardData() {
-  if (typeof getRequests !== "function" || typeof getOffers !== "function") return;
-  
+  if (typeof getRequests !== "function" || typeof getOffers !== "function")
+    return;
+
   try {
     const requests = await getRequests();
     const offers = await getOffers();
 
     // 1. Calculate values
     const totalRequests = requests.length;
-    const activeRequests = requests.filter(r => r.status === "OPEN" || r.status === "IN_PROGRESS").length;
-    const openRequests = requests.filter(r => r.status === "OPEN").length;
-    const inProgressRequests = requests.filter(r => r.status === "IN_PROGRESS").length;
-    const completedRequests = requests.filter(r => r.status === "COMPLETED").length;
+    const activeRequests = requests.filter(
+      (r) => r.status === "OPEN" || r.status === "IN_PROGRESS",
+    ).length;
+    const openRequests = requests.filter((r) => r.status === "OPEN").length;
+    const inProgressRequests = requests.filter(
+      (r) => r.status === "IN_PROGRESS",
+    ).length;
+    const completedRequests = requests.filter(
+      (r) => r.status === "COMPLETED",
+    ).length;
     const totalOffersVal = offers.length;
     const pendingReports =
-      requests.filter(r => r.flagged || r.status === "flagged" || r.raw?.flagged === true).length +
-      offers.filter(o => o.flagged || o.status === "flagged").length;
+      requests.filter(
+        (r) => r.flagged || r.status === "flagged" || r.raw?.flagged === true,
+      ).length +
+      offers.filter((o) => o.flagged || o.status === "flagged").length;
 
     // 2. Update stat cards in DOM
     const setText = (id, val) => {
@@ -308,18 +320,24 @@ async function loadDashboardData() {
     setText("stat-total-offers", totalOffersVal);
     setText("stat-pending-reports", pendingReports);
 
-    const updateBadge = (badgeParentId, badgeValId, items, dateKey, positiveIsGood = true) => {
+    const updateBadge = (
+      badgeParentId,
+      badgeValId,
+      items,
+      dateKey,
+      positiveIsGood = true,
+    ) => {
       const parent = document.getElementById(badgeParentId);
       const valEl = document.getElementById(badgeValId);
       if (!parent || !valEl) return;
       const now = Date.now();
       const fifteenDaysAgo = now - 15 * 24 * 60 * 60 * 1000;
       const thirtyDaysAgo = now - 30 * 24 * 60 * 60 * 1000;
-      const recent = items.filter(x => {
+      const recent = items.filter((x) => {
         const d = new Date(x[dateKey]);
         return d >= fifteenDaysAgo;
       }).length;
-      const older = items.filter(x => {
+      const older = items.filter((x) => {
         const d = new Date(x[dateKey]);
         return d >= thirtyDaysAgo && d < fifteenDaysAgo;
       }).length;
@@ -341,20 +359,58 @@ async function loadDashboardData() {
       }
     };
 
-    updateBadge("stat-badge-total", "stat-badge-val-total", requests, "created", true);
-    updateBadge("stat-badge-active", "stat-badge-val-active", requests.filter(r => r.status === "OPEN" || r.status === "IN_PROGRESS"), "created", true);
-    updateBadge("stat-badge-completed", "stat-badge-val-completed", requests.filter(r => r.status === "COMPLETED"), "created", true);
-    updateBadge("stat-badge-offers", "stat-badge-val-offers", offers, "submitted", true);
-    
+    updateBadge(
+      "stat-badge-total",
+      "stat-badge-val-total",
+      requests,
+      "created",
+      true,
+    );
+    updateBadge(
+      "stat-badge-active",
+      "stat-badge-val-active",
+      requests.filter((r) => r.status === "OPEN" || r.status === "IN_PROGRESS"),
+      "created",
+      true,
+    );
+    updateBadge(
+      "stat-badge-completed",
+      "stat-badge-val-completed",
+      requests.filter((r) => r.status === "COMPLETED"),
+      "created",
+      true,
+    );
+    updateBadge(
+      "stat-badge-offers",
+      "stat-badge-val-offers",
+      offers,
+      "submitted",
+      true,
+    );
+
     const reportsList = [
-      ...requests.filter(r => r.flagged || r.status === "flagged" || r.raw?.flagged === true).map(r => ({ date: r.created })),
-      ...offers.filter(o => o.flagged || o.status === "flagged").map(o => ({ date: o.submitted }))
+      ...requests
+        .filter(
+          (r) => r.flagged || r.status === "flagged" || r.raw?.flagged === true,
+        )
+        .map((r) => ({ date: r.created })),
+      ...offers
+        .filter((o) => o.flagged || o.status === "flagged")
+        .map((o) => ({ date: o.submitted })),
     ];
-    updateBadge("stat-badge-reports", "stat-badge-val-reports", reportsList, "date", false);
+    updateBadge(
+      "stat-badge-reports",
+      "stat-badge-val-reports",
+      reportsList,
+      "date",
+      false,
+    );
 
     // Update quick-action badges
     setText("qa-badge-reports", pendingReports);
-    const flaggedRequests = requests.filter(r => r.flagged || r.status === "flagged").length;
+    const flaggedRequests = requests.filter(
+      (r) => r.flagged || r.status === "flagged",
+    ).length;
     setText("qa-badge-flagged", flaggedRequests);
 
     // Update legend values
@@ -368,7 +424,11 @@ async function loadDashboardData() {
 
     // 3. Re-draw Donut chart with live data
     if (statusDonutChart) {
-      statusDonutChart.data.datasets[0].data = [openRequests, inProgressRequests, completedRequests];
+      statusDonutChart.data.datasets[0].data = [
+        openRequests,
+        inProgressRequests,
+        completedRequests,
+      ];
       statusDonutChart.update();
     }
 
@@ -376,7 +436,7 @@ async function loadDashboardData() {
     if (requestsLineChart) {
       const dailyCounts = Array.from({ length: 30 }, () => 0);
       const now = new Date();
-      requests.forEach(r => {
+      requests.forEach((r) => {
         const createdDate = new Date(r.created);
         const diffTime = Math.abs(now - createdDate);
         const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
@@ -390,7 +450,6 @@ async function loadDashboardData() {
       requestsLineChart.data.datasets[0].data = dailyCounts;
       requestsLineChart.update();
     }
-
   } catch (err) {
     console.error("[Firestore] Failed to load dashboard stats:", err);
   }
@@ -407,7 +466,7 @@ async function loadDashboardData() {
   gradient.addColorStop(1, "rgba(34,197,94,0.0)");
 
   // Start with all zeros — Firestore will update this
-  const data   = Array.from({ length: 30 }, () => 0);
+  const data = Array.from({ length: 30 }, () => 0);
   const labels = Array.from({ length: 30 }, (_, i) => i + 1);
 
   requestsLineChart = new Chart(ctx, {
@@ -544,15 +603,19 @@ function formatRelativeTime(date) {
   const diffMs = now - d;
   const diffSec = Math.floor(diffMs / 1000);
   const diffMin = Math.floor(diffSec / 60);
-  const diffHr  = Math.floor(diffMin / 60);
-  const diffDay = Math.floor(diffHr  / 24);
+  const diffHr = Math.floor(diffMin / 60);
+  const diffDay = Math.floor(diffHr / 24);
 
-  if (diffSec < 60)   return "just now";
-  if (diffMin < 60)   return `${diffMin}m ago`;
-  if (diffHr  < 24)   return `${diffHr}h ago`;
-  if (diffDay === 1)  return "Yesterday";
-  if (diffDay < 7)    return `${diffDay}d ago`;
-  return d.toLocaleDateString("en-EG", { month: "short", day: "numeric", timeZone: "Africa/Cairo" });
+  if (diffSec < 60) return "just now";
+  if (diffMin < 60) return `${diffMin}m ago`;
+  if (diffHr < 24) return `${diffHr}h ago`;
+  if (diffDay === 1) return "Yesterday";
+  if (diffDay < 7) return `${diffDay}d ago`;
+  return d.toLocaleDateString("en-EG", {
+    month: "short",
+    day: "numeric",
+    timeZone: "Africa/Cairo",
+  });
 }
 
 /**
@@ -589,29 +652,32 @@ function renderRecentActivity(items) {
   };
 
   const STATUS_LABELS = {
-    OPEN:        "Open",
+    OPEN: "Open",
     IN_PROGRESS: "In Progress",
-    COMPLETED:   "Completed",
-    CANCELLED:   "Cancelled",
+    COMPLETED: "Completed",
+    CANCELLED: "Cancelled",
   };
 
-  feed.innerHTML = items.map(item => {
-    const cfg = typeConfig[item._type] || typeConfig.request;
-    let title, desc;
+  feed.innerHTML = items
+    .map((item) => {
+      const cfg = typeConfig[item._type] || typeConfig.request;
+      let title, desc;
 
-    if (item._type === "offer") {
-      // Offers: show supplier name as title, linked request as desc
-      title = item.supplier?.name || "Supplier";
-      desc  = item.reqId ? `For ${item.reqId}` : "Offer submitted";
-    } else {
-      // Requests: show request title, status as desc
-      title = item.title || "Untitled Request";
-      desc  = STATUS_LABELS[item.status] || item.status || "Open";
-    }
+      if (item._type === "offer") {
+        // Offers: show supplier name as title, linked request as desc
+        title = item.supplier?.name || "Supplier";
+        desc = item.reqId ? `For ${item.reqId}` : "Offer submitted";
+      } else {
+        // Requests: show request title, status as desc
+        title = item.title || "Untitled Request";
+        desc = STATUS_LABELS[item.status] || item.status || "Open";
+      }
 
-    const timeStr = formatRelativeTime(item.created || item.submitted || item.createdAt);
+      const timeStr = formatRelativeTime(
+        item.created || item.submitted || item.createdAt,
+      );
 
-    return `
+      return `
       <div class="activity-item">
         <div class="activity-icon-wrap" style="background:${cfg.color}20;color:${cfg.color}">
           <svg viewBox="0 0 20 20" fill="none">${cfg.icon}</svg>
@@ -622,7 +688,8 @@ function renderRecentActivity(items) {
         </div>
         <div class="activity-time">${timeStr}</div>
       </div>`;
-  }).join("");
+    })
+    .join("");
 }
 
 /**
@@ -630,13 +697,14 @@ function renderRecentActivity(items) {
  * merge, sort by date descending, and render the top 5.
  */
 async function generateRecentActivities() {
-  if (typeof getRequests !== "function" || typeof getOffers !== "function") return;
+  if (typeof getRequests !== "function" || typeof getOffers !== "function")
+    return;
   try {
     const [requests, offers] = await Promise.all([getRequests(), getOffers()]);
 
     const tagged = [
-      ...requests.map(r => ({ ...r, _type: "request" })),
-      ...offers.map(o   => ({ ...o, _type: "offer"   })),
+      ...requests.map((r) => ({ ...r, _type: "request" })),
+      ...offers.map((o) => ({ ...o, _type: "offer" })),
     ];
 
     // Sort by most-recent first

@@ -1,7 +1,5 @@
 /* ============================================================
-   MAWRED – RFQ Platform | Requests Page Logic
-   Features: data table, live search, status/date filter,
-             sortable columns, pagination, CSV export
+   MAWRED – RFQ Platform | Requests Page
    ============================================================ */
 
 "use strict";
@@ -33,9 +31,7 @@ requireAuth();
   });
 })();
 
-
 let ALL_REQUESTS = [];
-
 
 /* ── 5. State ─────────────────────────────────────────────── */
 const state = {
@@ -59,7 +55,7 @@ function formatDate(d) {
     month: "short",
     day: "numeric",
     year: "numeric",
-    timeZone: "Africa/Cairo"
+    timeZone: "Africa/Cairo",
   });
 }
 
@@ -303,13 +299,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const _u = getUser();
   if (_u) {
     const _ini = getInitials(_u.name || "Admin");
-    const _set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-    _set("navbar-user-name",   _u.name || "Admin");
-    _set("navbar-user-role",   _u.role || "Administrator");
+    const _set = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    };
+    _set("navbar-user-name", _u.name || "Admin");
+    _set("navbar-user-role", _u.role || "Administrator");
     _set("navbar-user-avatar", _ini);
-    _set("dropdown-name",      _u.name || "Admin");
-    _set("dropdown-role",      _u.role || "Administrator");
-    _set("dropdown-avatar",    _ini);
+    _set("dropdown-name", _u.name || "Admin");
+    _set("dropdown-role", _u.role || "Administrator");
+    _set("dropdown-avatar", _ini);
   }
 
   /* ── Pre-apply ?status= query param from dashboard deep-links ── */
@@ -439,21 +438,22 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "profile.html";
   });
 
-
   /* Initial render — Firebase only */
   if (typeof getRequests === "function") {
     const tbody = document.getElementById("requests-tbody");
     if (tbody) {
       tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);">Loading requests…</td></tr>`;
     }
-    getRequests().then((res) => {
-      ALL_REQUESTS = res;
-      refresh();
-    }).catch((err) => {
-      console.error("Failed to load requests from Firestore:", err);
-      ALL_REQUESTS = [];
-      refresh();
-    });
+    getRequests()
+      .then((res) => {
+        ALL_REQUESTS = res;
+        refresh();
+      })
+      .catch((err) => {
+        console.error("Failed to load requests from Firestore:", err);
+        ALL_REQUESTS = [];
+        refresh();
+      });
   } else {
     ALL_REQUESTS = [];
     refresh();

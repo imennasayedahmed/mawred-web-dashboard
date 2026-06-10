@@ -1,7 +1,5 @@
 /* ============================================================
-   MAWRED – RFQ Platform | Request Detail Page Logic
-   Features: data hydration, status update, archive/flag,
-             share, toast notifications, timeline, offers
+   MAWRED – RFQ Platform | Request Detail Page
    ============================================================ */
 
 "use strict";
@@ -44,7 +42,6 @@ requireAuth();
   });
 })();
 
-
 /* ── 5. Resolve which request to show ────────────────────── */
 function getRequestId() {
   const params = new URLSearchParams(window.location.search);
@@ -64,7 +61,7 @@ function formatDate(d) {
     month: "short",
     day: "numeric",
     year: "numeric",
-    timeZone: "Africa/Cairo"
+    timeZone: "Africa/Cairo",
   });
 }
 
@@ -547,13 +544,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const _u = getUser();
   if (_u) {
     const _ini = getInitials(_u.name || "Admin");
-    const _set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-    _set("navbar-user-name",   _u.name || "Admin");
-    _set("navbar-user-role",   _u.role || "Administrator");
+    const _set = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    };
+    _set("navbar-user-name", _u.name || "Admin");
+    _set("navbar-user-role", _u.role || "Administrator");
     _set("navbar-user-avatar", _ini);
-    _set("dropdown-name",      _u.name || "Admin");
-    _set("dropdown-role",      _u.role || "Administrator");
-    _set("dropdown-avatar",    _ini);
+    _set("dropdown-name", _u.name || "Admin");
+    _set("dropdown-role", _u.role || "Administrator");
+    _set("dropdown-avatar", _ini);
   }
 
   const id = getRequestId();
@@ -567,7 +567,6 @@ document.addEventListener("DOMContentLoaded", () => {
     </div>`;
     return;
   }
-
 
   const handleData = (req) => {
     if (!req) {
