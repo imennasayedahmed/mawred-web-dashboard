@@ -44,190 +44,27 @@ requireAuth();
   });
 })();
 
-/* ── 4. Mock request data ────────────────────────────────── */
-const MOCK_REQUESTS = {
-  "REQ-2024-0142": {
-    id: "REQ-2024-0142",
-    title: "Hydraulic Pump Seals – Unit 7",
-    category: "Industrial maintenance",
-    postedDaysAgo: 4,
-    status: "IN_PROGRESS",
-    description:
-      "Replacement hydraulic pump seals required for Unit 7 production line. Existing seals show signs of wear after 18 months of continuous operation. Need OEM-equivalent or higher-grade seals rated for 350 bar working pressure with Viton FKM material. Delivery to Jeddah industrial facility within 14 days. All suppliers must include compliance certificates and warranty documentation.",
-    requester: { name: "Khalid Mansour", initials: "KM", color: "green" },
-    contact: "k.mansour@arabco.sa",
-    budget: 49500,
-    created: new Date("2025-03-12"),
-    updated: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hrs ago
-    parts: [
-      {
-        name: "Rotary Shaft Seal",
-        spec: "FKM 75A · 45×60×8mm",
-        qty: 24,
-        unit: "pcs",
-      },
-      { name: "O-Ring Set", spec: "Viton · 350 bar", qty: 12, unit: "sets" },
-      { name: "Piston Seal Kit", spec: "PTFE Bronze", qty: 6, unit: "kits" },
-      { name: "Wiper Seals", spec: "PU 90A", qty: 18, unit: "pcs" },
-    ],
-    attachments: [
-      {
-        name: "Specificatio...",
-        fullName: "Specification_Sheet.pdf",
-        size: "2.4 MB",
-        type: "pdf",
-      },
-      {
-        name: "Unit7-Photo...",
-        fullName: "Unit7-Photos.zip",
-        size: "13 MB",
-        type: "img",
-      },
-      {
-        name: "PartsList.xlsx",
-        fullName: "PartsList.xlsx",
-        size: "186 KB",
-        type: "xls",
-      },
-    ],
-    timeline: [
-      { label: "Created", date: "Mar 12, 09:24", done: true },
-      { label: "Open", date: "Mar 12, 11:04", done: true },
-      {
-        label: "In Progress",
-        date: "Mar 14, 15:42",
-        done: true,
-        current: true,
-      },
-      { label: "Completed", date: "Pending", done: false },
-    ],
-    offers: [
-      {
-        supplier: "SealTech Industries",
-        days: 8,
-        amount: 42300,
-        status: "accepted",
-      },
-      {
-        supplier: "Gulf Hydraulics Co.",
-        days: 12,
-        amount: 38800,
-        status: "pending",
-      },
-      {
-        supplier: "Riyadh Seal Supply",
-        days: 6,
-        amount: 45100,
-        status: "pending",
-      },
-      {
-        supplier: "PetroParts MEA",
-        days: 15,
-        amount: 51300,
-        status: "rejected",
-      },
-    ],
-  },
-};
-
-// Generate additional mock records to support deep-links from the requests table
-(function buildExtraRecords() {
-  const TITLES = [
-    "Diesel Filter Set – Fleet B",
-    "Industrial Bearing Kit – Plant 3",
-    "Brake Pad Replacement – Truck 14",
-    "Turbocharger Assembly – Generator 2",
-    "Conveyor Belt Rollers – Warehouse A",
-    "Air Compressor Valves – Site C",
-    "Gearbox Oil & Gaskets – Crane 5",
-    "Cooling Fan Motor – HVAC Block D",
-    "Electrical Panel Wiring – Tower 2",
-    "Forklift Battery Pack – Depot 1",
-  ];
-  const STATUSES = ["OPEN", "IN_PROGRESS", "COMPLETED", "CANCELLED"];
-  const REQUESTERS = [
-    { name: "Sarah Abdelrahman", initials: "SA", color: "rose" },
-    { name: "Omar Tarek", initials: "OT", color: "blue" },
-    { name: "Layla Farouk", initials: "LF", color: "purple" },
-    { name: "Youssef Nabil", initials: "YN", color: "amber" },
-    { name: "Mohamed Kamal", initials: "MK", color: "teal" },
-  ];
-  const baseDate = new Date("2024-10-28");
-  for (let i = 1; i <= 141; i++) {
-    const id = `REQ-2024-${String(142 - i).padStart(4, "0")}`;
-    if (MOCK_REQUESTS[id]) continue;
-    const d = new Date(baseDate);
-    d.setDate(baseDate.getDate() - i);
-    const requester = REQUESTERS[i % REQUESTERS.length];
-    const status = STATUSES[i % STATUSES.length];
-    const budget = (15 + (i % 50)) * 500;
-    MOCK_REQUESTS[id] = {
-      id,
-      title: TITLES[i % TITLES.length],
-      category: "General procurement",
-      postedDaysAgo: i,
-      status,
-      description: `Procurement request ${id}. Please review specifications and submit competitive offer within the required timeframe.`,
-      requester,
-      contact: `${requester.initials.toLowerCase()}@mawred.sa`,
-      budget,
-      created: d,
-      updated: d,
-      parts: [{ name: "Item A", spec: "Standard", qty: 10, unit: "pcs" }],
-      attachments: [],
-      timeline: [
-        {
-          label: "Created",
-          date: d.toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-          done: true,
-        },
-        {
-          label: "Open",
-          date: status !== "OPEN" ? "Submitted" : "Pending",
-          done: status !== "OPEN",
-        },
-        {
-          label: "In Progress",
-          date:
-            status === "IN_PROGRESS" || status === "COMPLETED"
-              ? "Active"
-              : "Pending",
-          done: status === "IN_PROGRESS" || status === "COMPLETED",
-          current: status === "IN_PROGRESS",
-        },
-        {
-          label: "Completed",
-          date: status === "COMPLETED" ? "Done" : "Pending",
-          done: status === "COMPLETED",
-        },
-      ],
-      offers: [],
-    };
-  }
-})();
 
 /* ── 5. Resolve which request to show ────────────────────── */
 function getRequestId() {
   const params = new URLSearchParams(window.location.search);
-  return params.get("id") || "REQ-2024-0142";
+  return params.get("id") || null;
 }
 
 /* ── 6. Utility helpers ───────────────────────────────────── */
-function formatSAR(n) {
-  return "SAR " + n.toLocaleString("en-US", { minimumFractionDigits: 0 });
+function formatEGP(n, isBudget = false) {
+  if (isBudget && (!n || n === 0)) return "Not specified";
+  if (n === undefined || n === null) return "—";
+  return "EGP " + n.toLocaleString("en-EG", { minimumFractionDigits: 0 });
 }
 
 function formatDate(d) {
   if (!(d instanceof Date) || isNaN(d)) return "—";
-  return d.toLocaleDateString("en-US", {
+  return d.toLocaleDateString("en-EG", {
     month: "short",
     day: "numeric",
     year: "numeric",
+    timeZone: "Africa/Cairo"
   });
 }
 
@@ -454,7 +291,7 @@ function renderInfoPanel(req) {
     </li>
     <li class="info-row">
       <span class="info-label">Budget</span>
-      <span class="info-value budget">${formatSAR(req.budget)}</span>
+      <span class="info-value budget">${formatEGP(req.budget, true)}</span>
     </li>
     <li class="info-row">
       <span class="info-label">Created</span>
@@ -496,7 +333,7 @@ function renderOffers(req) {
       <div class="offer-info">
         <div class="offer-supplier">${escapeHtml(o.supplier)}</div>
         <div class="offer-meta">
-          ${o.days} day${o.days !== 1 ? "s" : ""} · ${formatSAR(o.amount)}
+          ${o.days} day${o.days !== 1 ? "s" : ""} · ${formatEGP(o.amount)}
         </div>
       </div>
       <span class="offer-badge ${o.status}">${o.status.charAt(0).toUpperCase() + o.status.slice(1)}</span>
@@ -706,29 +543,85 @@ function renderNotFound(id) {
 
 /* ── 17. Bootstrap ───────────────────────────────────────── */
 document.addEventListener("DOMContentLoaded", () => {
-  const id = getRequestId();
-  const req = MOCK_REQUESTS[id];
+  /* Populate navbar + dropdown with session user */
+  const _u = getUser();
+  if (_u) {
+    const _ini = getInitials(_u.name || "Admin");
+    const _set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    _set("navbar-user-name",   _u.name || "Admin");
+    _set("navbar-user-role",   _u.role || "Administrator");
+    _set("navbar-user-avatar", _ini);
+    _set("dropdown-name",      _u.name || "Admin");
+    _set("dropdown-role",      _u.role || "Administrator");
+    _set("dropdown-avatar",    _ini);
+  }
 
-  if (!req) {
-    renderNotFound(id);
+  const id = getRequestId();
+
+  if (!id) {
+    document.body.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:80vh;font-family:Inter,sans-serif;color:#6b7280;">
+      <svg viewBox="0 0 24 24" fill="none" style="width:48px;height:48px;margin-bottom:16px"><path d="M3 17V8l5-5h9v14H3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 3v5H3M7 12h6M7 15h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <p style="font-size:1.1rem;font-weight:600;color:#111827;margin:0">No Request ID Provided</p>
+      <p style="margin:8px 0 20px;font-size:.9rem;">Return to the requests list to select a request.</p>
+      <a href="requests.html" style="padding:10px 20px;background:#22c55e;color:#fff;border-radius:8px;text-decoration:none;font-weight:500;">Go to Requests</a>
+    </div>`;
     return;
   }
 
-  // Hydrate page
-  renderBreadcrumb(req);
-  renderHeader(req);
-  renderParts(req);
-  renderAttachments(req);
-  renderTimeline(req);
-  renderInfoPanel(req);
-  renderOffers(req);
 
-  // Wire interactions
-  wireStatusDropdown(req);
-  wireAdminActions(req);
-  wireShareButton(req);
-  wireUserMenu();
-  wireBackLink();
-  wireLogout();
-  wireKeyboardNav();
+  const handleData = (req) => {
+    if (!req) {
+      renderNotFound(id);
+      return;
+    }
+
+    // Hydrate page
+    renderBreadcrumb(req);
+    renderHeader(req);
+    renderParts(req);
+    renderAttachments(req);
+    renderTimeline(req);
+    renderInfoPanel(req);
+    renderOffers(req);
+
+    // Wire interactions
+    wireStatusDropdown(req);
+    wireAdminActions(req);
+    wireShareButton(req);
+    wireUserMenu();
+    wireBackLink();
+    wireLogout();
+    wireKeyboardNav();
+  };
+
+  if (typeof getRequestById === "function") {
+    getRequestById(id)
+      .then((req) => {
+        if (req) {
+          handleData(req);
+        } else {
+          // Request not found in Firestore
+          document.querySelector(".detail-loading")?.remove();
+          const main = document.querySelector(".detail-main") || document.body;
+          main.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;font-family:Inter,sans-serif;color:#6b7280;">
+            <svg viewBox="0 0 24 24" fill="none" style="width:48px;height:48px;margin-bottom:16px"><path d="M3 17V8l5-5h9v14H3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 3v5H3M7 12h6M7 15h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <p style="font-size:1.1rem;font-weight:600;color:#111827;margin:0">Request Not Found</p>
+            <p style="margin:8px 0 20px;font-size:.9rem;">The request <strong>${id}</strong> does not exist in the database.</p>
+            <a href="requests.html" style="padding:10px 20px;background:#22c55e;color:#fff;border-radius:8px;text-decoration:none;font-weight:500;">Back to Requests</a>
+          </div>`;
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to load request from Firestore:", err);
+        document.querySelector(".detail-loading")?.remove();
+        const main = document.querySelector(".detail-main") || document.body;
+        main.innerHTML = `<div style="text-align:center;padding:80px 20px;font-family:Inter,sans-serif;color:#6b7280;">
+          <p style="font-size:1.1rem;font-weight:600;color:#111827;">Could not load request</p>
+          <p style="font-size:.9rem;">A connection error occurred. Please check your internet connection and try again.</p>
+          <a href="requests.html" style="display:inline-block;margin-top:16px;padding:10px 20px;background:#22c55e;color:#fff;border-radius:8px;text-decoration:none;font-weight:500;">Back to Requests</a>
+        </div>`;
+      });
+  } else {
+    console.warn("getRequestById not available — Firestore not loaded.");
+  }
 });

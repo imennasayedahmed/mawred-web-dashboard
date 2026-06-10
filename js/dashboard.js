@@ -35,28 +35,50 @@ requireAuth();
   });
 })();
 
-/* ── 4. Dropdown sign-out + nav links ────────────────────── */
+/* ── 4. Dropdown toggle + nav links ─────────────────────── */
 (function bindDropdown() {
-  // Sign out
+  // ── User chip toggle ──────────────────────────────────
+  const chip     = document.getElementById("user-chip");
+  const dropdown = document.getElementById("user-dropdown");
+  const caret    = document.getElementById("user-caret");
+
+  chip?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const open = dropdown.classList.toggle("open");
+    chip.setAttribute("aria-expanded", open);
+    if (caret) caret.style.transform = open ? "rotate(180deg)" : "";
+  });
+  document.addEventListener("click", () => {
+    dropdown?.classList.remove("open");
+    chip?.setAttribute("aria-expanded", "false");
+    if (caret) caret.style.transform = "";
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") dropdown?.classList.remove("open");
+  });
+
+  // ── Populate dropdown header with session data ────────
+  const user = getUser();
+  if (user) {
+    const ini = getInitials(user.name || "Admin");
+    const dAvatar = document.getElementById("dropdown-avatar");
+    const dName   = document.getElementById("dropdown-name");
+    const dRole   = document.getElementById("dropdown-role");
+    if (dAvatar) dAvatar.textContent = ini;
+    if (dName)   dName.textContent   = user.name || "Admin";
+    if (dRole)   dRole.textContent   = user.role || "Administrator";
+  }
+
+  // ── Sign out ──────────────────────────────────────────
   const signoutBtn = document.getElementById("dropdown-signout");
   if (signoutBtn) signoutBtn.addEventListener("click", logout);
-
-  // Also keep sidebar sign-out if it exists
   const sidebarLogout = document.getElementById("logout-btn");
   if (sidebarLogout) sidebarLogout.addEventListener("click", logout);
 
-  // Profile / Settings quick links
+  // ── Profile quick link ───────────────────────────────
   const profileBtn = document.getElementById("dropdown-profile");
-  const settingsBtn = document.getElementById("dropdown-settings");
   if (profileBtn)
-    profileBtn.addEventListener(
-      "click",
-      () => (window.location.href = "profile.html"),
-    );
-  if (settingsBtn)
-    settingsBtn.addEventListener("click", () => {
-      window.location.href = "settings.html";
-    });
+    profileBtn.addEventListener("click", () => (window.location.href = "profile.html"));
 })();
 
 /* ── 5. Global search (placeholder – extend as needed) ─── */
@@ -122,7 +144,7 @@ requireAuth();
   const map = {
     "qa-reports": "reports.html",
     "qa-flagged": "requests.html",
-    "qa-invite": "users.html",
+    "qa-invite": "requests.html",
     "qa-generate": "reports.html",
   };
   Object.entries(map).forEach(([id, page]) => {
@@ -253,7 +275,128 @@ requireAuth();
     });
 })();
 
-/* ── 10. Line chart ─────────────────────────────────────── */
+/* ── Global Chart Instances & Firestore Loader ────────────── */
+let requestsLineChart = null;
+let statusDonutChart = null;
+
+async function loadDashboardData() {
+  if (typeof getRequests !== "function" || typeof getOffers !== "function") return;
+  
+  try {
+    const requests = await getRequests();
+    const offers = await getOffers();
+
+    // 1. Calculate values
+    const totalRequests = requests.length;
+    const activeRequests = requests.filter(r => r.status === "OPEN" || r.status === "IN_PROGRESS").length;
+    const openRequests = requests.filter(r => r.status === "OPEN").length;
+    const inProgressRequests = requests.filter(r => r.status === "IN_PROGRESS").length;
+    const completedRequests = requests.filter(r => r.status === "COMPLETED").length;
+    const totalOffersVal = offers.length;
+    const pendingReports =
+      requests.filter(r => r.flagged || r.status === "flagged" || r.raw?.flagged === true).length +
+      offers.filter(o => o.flagged || o.status === "flagged").length;
+
+    // 2. Update stat cards in DOM
+    const setText = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val.toLocaleString("en-EG");
+    };
+    setText("stat-total-requests", totalRequests);
+    setText("stat-active-requests", activeRequests);
+    setText("stat-completed", completedRequests);
+    setText("stat-total-offers", totalOffersVal);
+    setText("stat-pending-reports", pendingReports);
+
+    const updateBadge = (badgeParentId, badgeValId, items, dateKey, positiveIsGood = true) => {
+      const parent = document.getElementById(badgeParentId);
+      const valEl = document.getElementById(badgeValId);
+      if (!parent || !valEl) return;
+      const now = Date.now();
+      const fifteenDaysAgo = now - 15 * 24 * 60 * 60 * 1000;
+      const thirtyDaysAgo = now - 30 * 24 * 60 * 60 * 1000;
+      const recent = items.filter(x => {
+        const d = new Date(x[dateKey]);
+        return d >= fifteenDaysAgo;
+      }).length;
+      const older = items.filter(x => {
+        const d = new Date(x[dateKey]);
+        return d >= thirtyDaysAgo && d < fifteenDaysAgo;
+      }).length;
+      let pct = 0;
+      if (older > 0) {
+        pct = ((recent - older) / older) * 100;
+      } else if (recent > 0) {
+        pct = 100;
+      }
+      const isUp = pct >= 0;
+      valEl.textContent = (isUp ? "+" : "") + pct.toFixed(1) + "%";
+      const isGood = isUp ? positiveIsGood : !positiveIsGood;
+      parent.className = `stat-badge ${isGood ? "up" : "down"}`;
+      const svg = parent.querySelector("svg");
+      if (svg) {
+        svg.innerHTML = isUp
+          ? `<path d="M6 9V3M3 6l3-3 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>`
+          : `<path d="M6 3v6M9 6L6 9 3 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>`;
+      }
+    };
+
+    updateBadge("stat-badge-total", "stat-badge-val-total", requests, "created", true);
+    updateBadge("stat-badge-active", "stat-badge-val-active", requests.filter(r => r.status === "OPEN" || r.status === "IN_PROGRESS"), "created", true);
+    updateBadge("stat-badge-completed", "stat-badge-val-completed", requests.filter(r => r.status === "COMPLETED"), "created", true);
+    updateBadge("stat-badge-offers", "stat-badge-val-offers", offers, "submitted", true);
+    
+    const reportsList = [
+      ...requests.filter(r => r.flagged || r.status === "flagged" || r.raw?.flagged === true).map(r => ({ date: r.created })),
+      ...offers.filter(o => o.flagged || o.status === "flagged").map(o => ({ date: o.submitted }))
+    ];
+    updateBadge("stat-badge-reports", "stat-badge-val-reports", reportsList, "date", false);
+
+    // Update quick-action badges
+    setText("qa-badge-reports", pendingReports);
+    const flaggedRequests = requests.filter(r => r.flagged || r.status === "flagged").length;
+    setText("qa-badge-flagged", flaggedRequests);
+
+    // Update legend values
+    const setLegendVal = (id, val) => {
+      const el = document.querySelector(`#${id} .donut-legend-val`);
+      if (el) el.textContent = val.toLocaleString("en-EG");
+    };
+    setLegendVal("donut-open", openRequests);
+    setLegendVal("donut-inprogress", inProgressRequests);
+    setLegendVal("donut-completed", completedRequests);
+
+    // 3. Re-draw Donut chart with live data
+    if (statusDonutChart) {
+      statusDonutChart.data.datasets[0].data = [openRequests, inProgressRequests, completedRequests];
+      statusDonutChart.update();
+    }
+
+    // 4. Re-draw Line chart (requests per day in last 30 days)
+    if (requestsLineChart) {
+      const dailyCounts = Array.from({ length: 30 }, () => 0);
+      const now = new Date();
+      requests.forEach(r => {
+        const createdDate = new Date(r.created);
+        const diffTime = Math.abs(now - createdDate);
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        if (diffDays < 30) {
+          const idx = 29 - diffDays;
+          if (idx >= 0 && idx < 30) {
+            dailyCounts[idx]++;
+          }
+        }
+      });
+      requestsLineChart.data.datasets[0].data = dailyCounts;
+      requestsLineChart.update();
+    }
+
+  } catch (err) {
+    console.error("[Firestore] Failed to load dashboard stats:", err);
+  }
+}
+
+/* ── 10. Line chart (starts empty — Firestore fills it) ─── */
 (function buildLineChart() {
   const canvas = document.getElementById("requests-line-chart");
   if (!canvas || typeof Chart === "undefined") return;
@@ -263,13 +406,11 @@ requireAuth();
   gradient.addColorStop(0, "rgba(34,197,94,0.28)");
   gradient.addColorStop(1, "rgba(34,197,94,0.0)");
 
-  const data = [
-    38, 42, 35, 48, 52, 45, 60, 55, 62, 68, 58, 72, 65, 78, 74, 82, 70, 88, 85,
-    90, 80, 95, 88, 100, 92, 97, 85, 102, 98, 105,
-  ];
+  // Start with all zeros — Firestore will update this
+  const data   = Array.from({ length: 30 }, () => 0);
   const labels = Array.from({ length: 30 }, (_, i) => i + 1);
 
-  new Chart(ctx, {
+  requestsLineChart = new Chart(ctx, {
     type: "line",
     data: {
       labels,
@@ -321,18 +462,19 @@ requireAuth();
   });
 })();
 
-/* ── 11. Donut chart ────────────────────────────────────── */
+/* ── 11. Donut chart (starts empty — Firestore fills it) ── */
 (function buildDonutChart() {
   const canvas = document.getElementById("status-donut-chart");
   if (!canvas || typeof Chart === "undefined") return;
 
-  new Chart(canvas.getContext("2d"), {
+  statusDonutChart = new Chart(canvas.getContext("2d"), {
     type: "doughnut",
     data: {
       labels: ["Open", "In Progress", "Completed"],
       datasets: [
         {
-          data: [342, 218, 891],
+          // Start with zeros — Firestore will update this
+          data: [0, 0, 0],
           backgroundColor: ["#22c55e", "#4ade80", "#15803d"],
           borderWidth: 0,
           hoverOffset: 6,
@@ -387,3 +529,135 @@ function showToast(message) {
   s.textContent = "@keyframes dash-spin { to { transform: rotate(360deg); } }";
   document.head.appendChild(s);
 })();
+
+/* ── 14. Recent Activity feed from Firestore ─────────────── */
+
+/**
+ * Format a Date (or Firestore Timestamp) as a human-readable relative string.
+ * e.g. "just now", "3m ago", "2h ago", "Yesterday", "Jun 5"
+ */
+function formatRelativeTime(date) {
+  if (!date) return "";
+  const d = date.toDate ? date.toDate() : new Date(date);
+  if (isNaN(d)) return "";
+  const now = new Date();
+  const diffMs = now - d;
+  const diffSec = Math.floor(diffMs / 1000);
+  const diffMin = Math.floor(diffSec / 60);
+  const diffHr  = Math.floor(diffMin / 60);
+  const diffDay = Math.floor(diffHr  / 24);
+
+  if (diffSec < 60)   return "just now";
+  if (diffMin < 60)   return `${diffMin}m ago`;
+  if (diffHr  < 24)   return `${diffHr}h ago`;
+  if (diffDay === 1)  return "Yesterday";
+  if (diffDay < 7)    return `${diffDay}d ago`;
+  return d.toLocaleDateString("en-EG", { month: "short", day: "numeric", timeZone: "Africa/Cairo" });
+}
+
+/**
+ * Render up to 5 recent activities in the #activity-feed container.
+ * Each item is either a request or an offer.
+ */
+function renderRecentActivity(items) {
+  const feed = document.getElementById("activity-feed");
+  if (!feed) return;
+
+  if (!items || items.length === 0) {
+    feed.innerHTML = `
+      <div class="activity-empty">
+        <svg viewBox="0 0 20 20" fill="none" style="width:32px;height:32px;color:var(--text-muted)">
+          <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M10 7v4l2 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        <p style="color:var(--text-muted);font-size:.85rem;margin:8px 0 0">No recent activity yet</p>
+      </div>`;
+    return;
+  }
+
+  const typeConfig = {
+    request: {
+      icon: `<path d="M3 17V8l5-5h9v14H3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 3v5H3M7 11h6M7 14h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>`,
+      color: "#22c55e",
+      label: "New Request",
+    },
+    offer: {
+      icon: `<path d="M3 10l7-7 7 7v7a1 1 0 01-1 1H4a1 1 0 01-1-1v-7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 18v-5h4v5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>`,
+      color: "#3b82f6",
+      label: "Offer Submitted",
+    },
+  };
+
+  const STATUS_LABELS = {
+    OPEN:        "Open",
+    IN_PROGRESS: "In Progress",
+    COMPLETED:   "Completed",
+    CANCELLED:   "Cancelled",
+  };
+
+  feed.innerHTML = items.map(item => {
+    const cfg = typeConfig[item._type] || typeConfig.request;
+    let title, desc;
+
+    if (item._type === "offer") {
+      // Offers: show supplier name as title, linked request as desc
+      title = item.supplier?.name || "Supplier";
+      desc  = item.reqId ? `For ${item.reqId}` : "Offer submitted";
+    } else {
+      // Requests: show request title, status as desc
+      title = item.title || "Untitled Request";
+      desc  = STATUS_LABELS[item.status] || item.status || "Open";
+    }
+
+    const timeStr = formatRelativeTime(item.created || item.submitted || item.createdAt);
+
+    return `
+      <div class="activity-item">
+        <div class="activity-icon-wrap" style="background:${cfg.color}20;color:${cfg.color}">
+          <svg viewBox="0 0 20 20" fill="none">${cfg.icon}</svg>
+        </div>
+        <div class="activity-body">
+          <div class="activity-title">${cfg.label}</div>
+          <div class="activity-desc">${title}</div>
+        </div>
+        <div class="activity-time">${timeStr}</div>
+      </div>`;
+  }).join("");
+}
+
+/**
+ * Fetch the most recent requests + offers from Firestore,
+ * merge, sort by date descending, and render the top 5.
+ */
+async function generateRecentActivities() {
+  if (typeof getRequests !== "function" || typeof getOffers !== "function") return;
+  try {
+    const [requests, offers] = await Promise.all([getRequests(), getOffers()]);
+
+    const tagged = [
+      ...requests.map(r => ({ ...r, _type: "request" })),
+      ...offers.map(o   => ({ ...o, _type: "offer"   })),
+    ];
+
+    // Sort by most-recent first
+    tagged.sort((a, b) => {
+      const getMs = (item) => {
+        const raw = item.created || item.submitted || item.createdAt;
+        if (!raw) return 0;
+        const d = raw.toDate ? raw.toDate() : new Date(raw);
+        return isNaN(d) ? 0 : d.getTime();
+      };
+      return getMs(b) - getMs(a);
+    });
+
+    renderRecentActivity(tagged.slice(0, 5));
+  } catch (err) {
+    console.error("[Firestore] Failed to load recent activities:", err);
+  }
+}
+
+// Trigger loading from Firestore
+document.addEventListener("DOMContentLoaded", () => {
+  loadDashboardData();
+  generateRecentActivities();
+});

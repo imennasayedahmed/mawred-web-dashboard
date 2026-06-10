@@ -33,102 +33,9 @@ requireAuth();
   });
 })();
 
-/* ── 4. Mock dataset (142 requests) ──────────────────────── */
-const AVATAR_COLORS = [
-  "green",
-  "blue",
-  "purple",
-  "amber",
-  "rose",
-  "teal",
-  "indigo",
-];
 
-const REQUESTERS = [
-  { name: "Khaled Mansour", initials: "KM", color: "green" },
-  { name: "Sarah Abdelrahman", initials: "SA", color: "rose" },
-  { name: "Omar Tarek", initials: "OT", color: "blue" },
-  { name: "Layla Farouk", initials: "LF", color: "purple" },
-  { name: "Youssef Nabil", initials: "YN", color: "amber" },
-  { name: "Mohamed Kamal", initials: "MK", color: "teal" },
-  { name: "Rania Hosny", initials: "RH", color: "indigo" },
-  { name: "Amr Saleh", initials: "AS", color: "green" },
-  { name: "Nour Elsayed", initials: "NE", color: "rose" },
-  { name: "Tamer Ibrahim", initials: "TI", color: "blue" },
-  { name: "Dina Mostafa", initials: "DM", color: "purple" },
-  { name: "Hossam Adel", initials: "HA", color: "amber" },
-];
+let ALL_REQUESTS = [];
 
-const TITLES = [
-  "Hydraulic Pump Seals – Unit 7",
-  "Diesel Filter Set – Fleet B",
-  "Industrial Bearing Kit – Plant 3",
-  "Brake Pad Replacement – Truck 14",
-  "Turbocharger Assembly – Generator 2",
-  "Conveyor Belt Rollers – Warehouse A",
-  "Air Compressor Valves – Site C",
-  "Gearbox Oil & Gaskets – Crane 5",
-  "Cooling Fan Motor – HVAC Block D",
-  "Electrical Panel Wiring – Tower 2",
-  "Forklift Battery Pack – Depot 1",
-  "Safety Harness Set – Rig 9",
-  "Pneumatic Hose Bundle – Line 4",
-  "Water Pump Impeller – Station B",
-  "Steel Cable Reel – Winch 3",
-  "Welding Rod Supply – Workshop A",
-  "Pressure Gauge Calibration – Unit 6",
-  "LED Floodlight Array – Yard 5",
-  "Exhaust Manifold Gasket – Vehicle 8",
-  "Compressor Belt Drive – HVAC 2",
-  "Control Panel Upgrade – Site Alpha",
-  "Lubrication System Parts – Milling 3",
-  "Fire Suppression Refill – Block C",
-  "Scaffolding Brackets – Tower 1",
-  "Valve Actuator Set – Pipeline 7",
-  "Transformer Oil Sampling – Grid A",
-  "Generator Fuel Injectors – Plant 2",
-  "PLC Module Replacement – Line 6",
-  "Rigging Hardware – Crane 9",
-  "Cooling Tower Nozzles – HVAC E",
-];
-
-const STATUSES = [
-  "OPEN",
-  "OPEN",
-  "OPEN",
-  "IN_PROGRESS",
-  "IN_PROGRESS",
-  "COMPLETED",
-  "CANCELLED",
-];
-
-function randomBetween(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function generateDataset() {
-  // Use a seeded-like sequence for reproducibility
-  const rows = [];
-  const baseDate = new Date("2024-10-28");
-  for (let i = 0; i < 142; i++) {
-    const d = new Date(baseDate);
-    d.setDate(baseDate.getDate() - i);
-    const requester = REQUESTERS[i % REQUESTERS.length];
-    const status = STATUSES[i % STATUSES.length];
-    const budget = randomBetween(15, 980) * 50; // $750 – $49,000
-    rows.push({
-      id: `REQ-2024-${String(142 - i).padStart(4, "0")}`,
-      title: TITLES[i % TITLES.length],
-      requester,
-      status,
-      budget,
-      created: d,
-    });
-  }
-  return rows;
-}
-
-const ALL_REQUESTS = generateDataset();
 
 /* ── 5. State ─────────────────────────────────────────────── */
 const state = {
@@ -143,14 +50,16 @@ const state = {
 
 /* ── 6. Utility helpers ───────────────────────────────────── */
 function formatBudget(n) {
-  return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2 });
+  if (!n || n === 0) return "Not specified";
+  return "EGP " + n.toLocaleString("en-EG", { minimumFractionDigits: 0 });
 }
 
 function formatDate(d) {
-  return d.toLocaleDateString("en-US", {
+  return d.toLocaleDateString("en-EG", {
     month: "short",
     day: "numeric",
     year: "numeric",
+    timeZone: "Africa/Cairo"
   });
 }
 
@@ -390,7 +299,21 @@ function escapeHtml(str) {
 
 /* ── 13. Wire up controls ─────────────────────────────────── */
 document.addEventListener("DOMContentLoaded", () => {
+  /* Populate navbar + dropdown with session user */
+  const _u = getUser();
+  if (_u) {
+    const _ini = getInitials(_u.name || "Admin");
+    const _set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    _set("navbar-user-name",   _u.name || "Admin");
+    _set("navbar-user-role",   _u.role || "Administrator");
+    _set("navbar-user-avatar", _ini);
+    _set("dropdown-name",      _u.name || "Admin");
+    _set("dropdown-role",      _u.role || "Administrator");
+    _set("dropdown-avatar",    _ini);
+  }
+
   /* ── Pre-apply ?status= query param from dashboard deep-links ── */
+
   const urlParams = new URLSearchParams(window.location.search);
   const paramStatus = urlParams.get("status");
 
@@ -515,14 +438,26 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("dropdown-profile")?.addEventListener("click", () => {
     window.location.href = "profile.html";
   });
-  document
-    .getElementById("dropdown-settings")
-    ?.addEventListener("click", () => {
-      window.location.href = "settings.html";
-    });
 
-  /* Initial render */
-  refresh();
+
+  /* Initial render — Firebase only */
+  if (typeof getRequests === "function") {
+    const tbody = document.getElementById("requests-tbody");
+    if (tbody) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);">Loading requests…</td></tr>`;
+    }
+    getRequests().then((res) => {
+      ALL_REQUESTS = res;
+      refresh();
+    }).catch((err) => {
+      console.error("Failed to load requests from Firestore:", err);
+      ALL_REQUESTS = [];
+      refresh();
+    });
+  } else {
+    ALL_REQUESTS = [];
+    refresh();
+  }
 });
 
 /* ── 14. CSV Export ───────────────────────────────────────── */

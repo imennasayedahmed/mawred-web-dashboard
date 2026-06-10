@@ -69,96 +69,210 @@ function showToast(message, type = "success") {
   toastTimer = setTimeout(() => toast.classList.remove("show"), 3200);
 }
 
-/* ── 5. Data generators ──────────────────────────────────── */
-
-// Returns `days` data points for requests/day, scaled to date range
-function genRequestsPerDay(days) {
-  const data = [];
-  const labels = [];
-  const today = new Date();
-  const step = days <= 7 ? 1 : days <= 30 ? 1 : days <= 90 ? 3 : 7;
-  for (let i = days - 1; i >= 0; i -= step) {
-    const d = new Date(today);
-    d.setDate(today.getDate() - i);
-    labels.push(
-      d.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
-    );
-    data.push(
-      Math.max(
-        18,
-        Math.round(42 + Math.sin(i * 0.35) * 14 + (Math.random() - 0.4) * 16),
-      ),
-    );
-  }
-  return { labels, data };
-}
-
-// Offers per category — static ratios, values scale with range multiplier
-function genOffersPerCategory(multiplier = 1) {
-  const cats = ["IT", "Constr.", "Logistics", "Office", "Medical", "Energy"];
-  const base = [6.2, 7.1, 5.4, 4.8, 5.9, 4.2];
-  return { labels: cats, data: base.map((v) => +(v * multiplier).toFixed(1)) };
-}
-
-// Top suppliers
-const SUPPLIERS_DATA = [
-  { name: "Al-Faisal Industries", count: 142 },
-  { name: "Gulf Tech Solutions", count: 124 },
-  { name: "Riyadh Supplies ...", count: 108 },
-  { name: "Najd Trading LLC", count: 87 },
-  { name: "Eastern Logistics", count: 72 },
-  { name: "Mecca Builders", count: 61 },
-];
-
-// Status distribution — values scale with range
-function genStatusDist(multiplier = 1) {
-  return {
-    open: Math.round(412 * multiplier),
-    inprogress: Math.round(284 * multiplier),
-    completed: Math.round(498 * multiplier),
-    archived: Math.round(90 * multiplier),
-  };
-}
-
-// User growth — monthly for 10 months
-function genUserGrowth() {
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-  ];
-  const requesters = [120, 165, 210, 270, 330, 395, 455, 520, 580, 650];
-  const suppliers = [80, 110, 145, 185, 225, 265, 305, 345, 390, 440];
-  return { labels: months, requesters, suppliers };
-}
 
 /* ── 6. Chart instances (kept for update/destroy) ─────────── */
 const CHARTS = {};
 
-/* ── 7. Chart: Requests Per Day (line) ───────────────────── */
-function buildRequestsChart(days = 30) {
-  const ctx = document.getElementById("chart-requests");
+/* ── Charts are built by the Firestore-wired functions below ── */
+
+function buildUserGrowthChart() {
+  const ctx = document.getElementById("chart-user-growth");
   if (!ctx || typeof Chart === "undefined") return;
 
+  if (CHARTS.userGrowth) CHARTS.userGrowth.destroy();
+
+  const now = new Date();
+  const labels = [];
+  for (let i = 9; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    labels.push(d.toLocaleDateString("en-EG", { month: "short", timeZone: "Africa/Cairo" }));
+  }
+
+  let requesters = Array(10).fill(0);
+  let suppliers  = Array(10).fill(0);
+
+  if (liveUsers && liveUsers.length > 0) {
+    for (let i = 9; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i + 1, 0, 23, 59, 59);
+      requesters[9 - i] = liveUsers.filter(u => {
+        const role = (u.role || "").toLowerCase();
+        const created = u.createdAt ? (typeof u.createdAt.toDate === "function" ? u.createdAt.toDate() : new Date(u.createdAt)) : new Date(0);
+        return (role === "requester" || role === "customer" || role === "client") && created <= d;
+      }).length;
+      suppliers[9 - i] = liveUsers.filter(u => {
+        const role = (u.role || "").toLowerCase();
+        const created = u.createdAt ? (typeof u.createdAt.toDate === "function" ? u.createdAt.toDate() : new Date(u.createdAt)) : new Date(0);
+        return (role === "supplier" || role === "vendor") && created <= d;
+      }).length;
+    }
+  }
+
+  CHARTS.userGrowth = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Requesters",
+          data: requesters,
+          borderColor: "#22c55e",
+          backgroundColor: "transparent",
+          borderWidth: 2.5,
+          tension: 0.4,
+          pointRadius: 4,
+          pointBackgroundColor: "#22c55e",
+          pointBorderColor: "#fff",
+          pointBorderWidth: 2,
+          pointHoverRadius: 6,
+        },
+        {
+          label: "Suppliers",
+          data: suppliers,
+          borderColor: "#15803d",
+          backgroundColor: "transparent",
+          borderWidth: 2.5,
+          tension: 0.4,
+          pointRadius: 4,
+          pointBackgroundColor: "#15803d",
+          pointBorderColor: "#fff",
+          pointBorderWidth: 2,
+          pointHoverRadius: 6,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { intersect: false, mode: "index" },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: "#111827",
+          titleColor: "#f9fafb",
+          bodyColor: "#d1d5db",
+          padding: 10,
+        },
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { color: "#9ca3af", font: { size: 10 } },
+          border: { display: false },
+        },
+        y: {
+          grid: { color: "#f3f4f6" },
+          ticks: { color: "#9ca3af", font: { size: 10 } },
+          border: { display: false },
+          beginAtZero: true,
+        },
+      },
+    },
+  });
+}
+
+/* ── 12. Date range & Firestore Integration wiring ───────── */
+let liveRequests = [];
+let liveOffers = [];
+let liveUsers = [];
+let activeRange = "30";
+
+async function loadAnalyticsData() {
+  if (typeof getRequests !== "function" || typeof getOffers !== "function") return;
+  try {
+    liveRequests = await getRequests();
+    liveOffers = await getOffers();
+    if (typeof getUsers === "function") {
+      liveUsers = await getUsers();
+    }
+    applyDateRange(activeRange);
+  } catch (err) {
+    console.error("[Firestore] Failed to load analytics data:", err);
+  }
+}
+
+const RANGE_MAP = { 7: 7, 30: 30, 90: 90 };
+
+function applyDateRange(range) {
+  activeRange = range;
+  const days = RANGE_MAP[range] || 30;
+
+  // Filter requests/offers by selected date range
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - days);
+  
+  const filteredReqs = liveRequests.filter(r => new Date(r.created) >= cutoff);
+  const filteredOffers = liveOffers.filter(o => new Date(o.submitted) >= cutoff);
+
+  // 1. Build requests per day chart dynamically
+  buildRequestsChart(days, filteredReqs);
+
+  // 2. Build offers per category ratio bar chart
+  buildOffersChart(filteredOffers);
+
+  // 3. Render top supplier bars
+  renderSupplierBars(filteredOffers);
+
+  // 4. Build status distribution donut chart
+  buildStatusChart(filteredReqs);
+}
+
+function buildRequestsChart(days, filteredReqs) {
+  const ctx = document.getElementById("chart-requests");
+  if (!ctx || typeof Chart === "undefined") return;
   if (CHARTS.requests) CHARTS.requests.destroy();
 
   const gradient = ctx.getContext("2d").createLinearGradient(0, 0, 0, 220);
   gradient.addColorStop(0, "rgba(34,197,94,0.25)");
   gradient.addColorStop(1, "rgba(34,197,94,0.0)");
 
-  const { labels, data } = genRequestsPerDay(days);
-  const total = data.reduce((a, b) => a + b, 0);
+  const labels = [];
+  const data = [];
+  const today = new Date();
+  const step = days <= 7 ? 1 : days <= 30 ? 1 : days <= 90 ? 3 : 7;
 
-  // Update KPI
+  if (liveRequests.length > 0) {
+    // Build a daily counts map from real Firestore data
+    const counts = {};
+    for (let i = days - 1; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      const dateStr = d.toLocaleDateString("en-EG", { month: "short", day: "numeric", timeZone: "Africa/Cairo" });
+      counts[dateStr] = 0;
+    }
+
+    filteredReqs.forEach(r => {
+      const dateStr = new Date(r.created).toLocaleDateString("en-EG", { month: "short", day: "numeric", timeZone: "Africa/Cairo" });
+      if (dateStr in counts) counts[dateStr]++;
+    });
+
+    for (let i = days - 1; i >= 0; i -= step) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      const dateStr = d.toLocaleDateString("en-EG", { month: "short", day: "numeric", timeZone: "Africa/Cairo" });
+      labels.push(dateStr);
+      let sum = 0;
+      for (let s = 0; s < step; s++) {
+        const subD = new Date(d);
+        subD.setDate(d.getDate() + s);
+        const subStr = subD.toLocaleDateString("en-EG", { month: "short", day: "numeric", timeZone: "Africa/Cairo" });
+        sum += counts[subStr] || 0;
+      }
+      data.push(sum);
+    }
+  } else {
+    // No live data — show empty labels, zero data
+    const today = new Date();
+    const step = days <= 7 ? 1 : days <= 30 ? 1 : days <= 90 ? 3 : 7;
+    for (let i = days - 1; i >= 0; i -= step) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      labels.push(d.toLocaleDateString("en-EG", { month: "short", day: "numeric", timeZone: "Africa/Cairo" }));
+      data.push(0);
+    }
+  }
+
   const kpiEl = document.getElementById("kpi-requests");
-  if (kpiEl) kpiEl.textContent = total.toLocaleString();
+  if (kpiEl) kpiEl.textContent = filteredReqs ? filteredReqs.length.toLocaleString("en-EG") : "0";
 
   CHARTS.requests = new Chart(ctx, {
     type: "line",
@@ -215,33 +329,47 @@ function buildRequestsChart(days = 30) {
   });
 }
 
-/* ── 8. Chart: Offers Per Request Ratio (bar) ────────────── */
-function buildOffersChart(multiplier = 1) {
+function buildOffersChart(filteredOffers) {
   const ctx = document.getElementById("chart-offers");
   if (!ctx || typeof Chart === "undefined") return;
-
   if (CHARTS.offers) CHARTS.offers.destroy();
 
-  const { labels, data } = genOffersPerCategory(multiplier);
-  const avg = (data.reduce((a, b) => a + b, 0) / data.length).toFixed(1);
-  const avgEl = document.getElementById("kpi-offers-avg");
-  if (avgEl) avgEl.textContent = avg;
+  let categories = [];
+  let data = [];
+
+  if (liveOffers.length > 0 && liveRequests.length > 0) {
+    const categoryCounts = {};
+    filteredOffers.forEach(o => {
+      const req = liveRequests.find(r => r.id === o.reqId);
+      const cat = req ? req.category : "General";
+      categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+    });
+    const sorted = Object.entries(categoryCounts)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 6);
+    categories = sorted.map(x => x.name);
+    data = sorted.map(x => x.count);
+    const totalRequests = liveRequests.length || 1;
+    const avgOffers = (filteredOffers.length / totalRequests).toFixed(1);
+    const avgEl = document.getElementById("kpi-offers-avg");
+    if (avgEl) avgEl.textContent = avgOffers;
+  } else {
+    // No live data — show empty
+    categories = [];
+    data = [];
+    const avgEl = document.getElementById("kpi-offers-avg");
+    if (avgEl) avgEl.textContent = "0";
+  }
 
   CHARTS.offers = new Chart(ctx, {
     type: "bar",
     data: {
-      labels,
+      labels: categories,
       datasets: [
         {
           data,
-          backgroundColor: [
-            "#22c55e",
-            "#4ade80",
-            "#16a34a",
-            "#22c55e",
-            "#4ade80",
-            "#86efac",
-          ],
+          backgroundColor: ["#22c55e", "#4ade80", "#16a34a", "#22c55e", "#4ade80", "#86efac"],
           borderRadius: 5,
           borderSkipped: false,
         },
@@ -257,7 +385,7 @@ function buildOffersChart(multiplier = 1) {
           titleColor: "#f9fafb",
           bodyColor: "#d1d5db",
           padding: 10,
-          callbacks: { label: (ctx) => ` ${ctx.parsed.y} avg offers` },
+          callbacks: { label: (ctx) => ` ${ctx.parsed.y} offers` },
         },
       },
       scales: {
@@ -268,28 +396,40 @@ function buildOffersChart(multiplier = 1) {
         },
         y: {
           grid: { color: "#f3f4f6" },
-          ticks: { color: "#9ca3af", font: { size: 10 }, stepSize: 2 },
+          ticks: { color: "#9ca3af", font: { size: 10 } },
           border: { display: false },
           beginAtZero: true,
-          max: 10,
         },
       },
     },
   });
 }
 
-/* ── 9. Supplier bars (no Chart.js – pure HTML) ──────────── */
-function renderSupplierBars(multiplier = 1) {
+function renderSupplierBars(filteredOffers) {
   const list = document.getElementById("supplier-bar-list");
   if (!list) return;
 
-  const scaled = SUPPLIERS_DATA.map((s) => ({
-    ...s,
-    count: Math.round(s.count * multiplier),
-  }));
-  const max = scaled[0].count;
+  let sortedSuppliers = [];
+  if (liveOffers.length > 0) {
+    const counts = {};
+    filteredOffers.forEach(o => {
+      const name = o.supplier?.name || "Unknown Supplier";
+      counts[name] = (counts[name] || 0) + 1;
+    });
+    sortedSuppliers = Object.entries(counts)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 6);
+  }
 
-  list.innerHTML = scaled
+  if (sortedSuppliers.length === 0) {
+    list.innerHTML = `<div style="color:var(--text-muted);font-size:.85rem;padding:16px 0;text-align:center;">No supplier data yet</div>`;
+    return;
+  }
+
+  const max = sortedSuppliers[0]?.count || 1;
+
+  list.innerHTML = sortedSuppliers
     .map(
       (s, i) => `
     <div class="supplier-bar-row">
@@ -305,22 +445,31 @@ function renderSupplierBars(multiplier = 1) {
     .join("");
 }
 
-/* ── 10. Chart: Status Distribution donut ────────────────── */
-function buildStatusChart(multiplier = 1) {
+function buildStatusChart(filteredReqs) {
   const ctx = document.getElementById("chart-status");
   if (!ctx || typeof Chart === "undefined") return;
-
   if (CHARTS.status) CHARTS.status.destroy();
 
-  const dist = genStatusDist(multiplier);
+  let dist = { open: 0, inprogress: 0, completed: 0, archived: 0 };
+  
+  if (liveRequests.length > 0) {
+    filteredReqs.forEach(r => {
+      const s = (r.status || "").toUpperCase();
+      if (s === "OPEN") dist.open++;
+      else if (s === "IN_PROGRESS") dist.inprogress++;
+      else if (s === "COMPLETED") dist.completed++;
+      else dist.archived++;
+    });
+  }
+
   const total = dist.open + dist.inprogress + dist.completed + dist.archived;
-  const pct = (v) => Math.round((v / total) * 100);
+  const pct = (v) => total > 0 ? Math.round((v / total) * 100) : 0;
 
   // Update legend
   const setLegend = (id, count, p) => {
     const el = document.getElementById(id);
     if (el)
-      el.innerHTML = `<span class="status-legend-count">${count.toLocaleString()}</span>
+      el.innerHTML = `<span class="status-legend-count">${count.toLocaleString("en-EG")}</span>
        <span class="status-legend-pct">${p}%</span>`;
   };
   setLegend("legend-open", dist.open, pct(dist.open));
@@ -329,7 +478,7 @@ function buildStatusChart(multiplier = 1) {
   setLegend("legend-archived", dist.archived, pct(dist.archived));
 
   const totalEl = document.getElementById("legend-total");
-  if (totalEl) totalEl.textContent = total.toLocaleString();
+  if (totalEl) totalEl.textContent = total.toLocaleString("en-EG");
 
   CHARTS.status = new Chart(ctx, {
     type: "doughnut",
@@ -357,98 +506,12 @@ function buildStatusChart(multiplier = 1) {
           padding: 10,
           callbacks: {
             label: (ctx) =>
-              ` ${ctx.parsed.toLocaleString()} (${pct(ctx.parsed)}%)`,
+              ` ${ctx.parsed.toLocaleString("en-EG")} (${pct(ctx.parsed)}%)`,
           },
         },
       },
     },
   });
-}
-
-/* ── 11. Chart: User Growth (dual line) ──────────────────── */
-function buildUserGrowthChart() {
-  const ctx = document.getElementById("chart-user-growth");
-  if (!ctx || typeof Chart === "undefined") return;
-
-  if (CHARTS.userGrowth) CHARTS.userGrowth.destroy();
-
-  const { labels, requesters, suppliers } = genUserGrowth();
-
-  CHARTS.userGrowth = new Chart(ctx, {
-    type: "line",
-    data: {
-      labels,
-      datasets: [
-        {
-          label: "Requesters",
-          data: requesters,
-          borderColor: "#22c55e",
-          backgroundColor: "transparent",
-          borderWidth: 2.5,
-          tension: 0.4,
-          pointRadius: 4,
-          pointBackgroundColor: "#22c55e",
-          pointBorderColor: "#fff",
-          pointBorderWidth: 2,
-          pointHoverRadius: 6,
-        },
-        {
-          label: "Suppliers",
-          data: suppliers,
-          borderColor: "#15803d",
-          backgroundColor: "transparent",
-          borderWidth: 2.5,
-          tension: 0.4,
-          pointRadius: 4,
-          pointBackgroundColor: "#15803d",
-          pointBorderColor: "#fff",
-          pointBorderWidth: 2,
-          pointHoverRadius: 6,
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { intersect: false, mode: "index" },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: "#111827",
-          titleColor: "#f9fafb",
-          bodyColor: "#d1d5db",
-          padding: 10,
-        },
-      },
-      scales: {
-        x: {
-          grid: { display: false },
-          ticks: { color: "#9ca3af", font: { size: 10 } },
-          border: { display: false },
-        },
-        y: {
-          grid: { color: "#f3f4f6" },
-          ticks: { color: "#9ca3af", font: { size: 10 }, stepSize: 150 },
-          border: { display: false },
-          beginAtZero: true,
-        },
-      },
-    },
-  });
-}
-
-/* ── 12. Date range wiring ───────────────────────────────── */
-const RANGE_MAP = { 7: 7, 30: 30, 90: 90 };
-const MULTIPLIERS = { 7: 0.25, 30: 1, 90: 3.2 };
-
-function applyDateRange(range) {
-  const days = RANGE_MAP[range] || 30;
-  const multiplier = MULTIPLIERS[range] || 1;
-  buildRequestsChart(days);
-  buildOffersChart(multiplier);
-  renderSupplierBars(multiplier);
-  buildStatusChart(multiplier);
-  // User growth is monthly so stays fixed
 }
 
 /* ── 13. Chart download helper ───────────────────────────── */
@@ -468,8 +531,21 @@ function downloadChart(chartKey, filename) {
 
 /* ── 14. Bootstrap ───────────────────────────────────────── */
 document.addEventListener("DOMContentLoaded", () => {
+  /* Populate navbar + dropdown with session user */
+  const _u = getUser();
+  if (_u) {
+    const _ini = getInitials(_u.name || "Admin");
+    const _set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    _set("navbar-user-name",   _u.name || "Admin");
+    _set("navbar-user-role",   _u.role || "Administrator");
+    _set("navbar-user-avatar", _ini);
+    _set("dropdown-name",      _u.name || "Admin");
+    _set("dropdown-role",      _u.role || "Administrator");
+    _set("dropdown-avatar",    _ini);
+  }
+
   /* Date range pills */
-  let activeRange = "30";
+
   document.querySelectorAll(".date-pill[data-range]").forEach((pill) => {
     pill.addEventListener("click", () => {
       document
@@ -544,13 +620,10 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("dropdown-profile")?.addEventListener("click", () => {
     window.location.href = "profile.html";
   });
-  document
-    .getElementById("dropdown-settings")
-    ?.addEventListener("click", () => {
-      window.location.href = "settings.html";
-    });
 
-  /* Build all charts on first load */
-  applyDateRange("30");
-  buildUserGrowthChart();
+
+  // Load live data
+  loadAnalyticsData().then(() => {
+    buildUserGrowthChart();
+  });
 });

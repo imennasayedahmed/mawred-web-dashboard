@@ -12,7 +12,9 @@
     />
     <link rel="stylesheet" href="../css/dashboard.css" />
     <link rel="stylesheet" href="../css/profile.css" />
-  </head>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Cpath d='M16 4C16 4 8 10 8 18C8 22.4183 11.5817 26 16 26C20.4183 26 24 22.4183 24 18C24 10 16 4 16 4Z' fill='%2322c55e' opacity='0.9'/%3E%3Cpath d='M16 12C16 12 11 16 11 20C11 22.7614 13.2386 25 16 25C18.7614 25 21 22.7614 21 20C21 16 16 12 16 12Z' fill='%2315803d' opacity='0.6'/%3E%3C/svg%3E">
+      <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Cpath d='M16 4C16 4 8 10 8 18C8 22.4183 11.5817 26 16 26C20.4183 26 24 22.4183 24 18C24 10 16 4 16 4Z' fill='%2322c55e' opacity='0.9'/%3E%3Cpath d='M16 12C16 12 11 16 11 20C11 22.7614 13.2386 25 16 25C18.7614 25 21 22.7614 21 20C21 16 16 12 16 12Z' fill='%2315803d' opacity='0.6'/%3E%3C/svg%3E">
+</head>
   <body>
     <div class="app-shell">
       <!-- ══════════════ SIDEBAR ══════════════ -->
@@ -117,37 +119,6 @@
             </svg>
             Offers
           </a>
-          <a href="users.html" class="nav-item" id="nav-users">
-            <svg viewBox="0 0 20 20" fill="none">
-              <circle
-                cx="8"
-                cy="6"
-                r="3"
-                stroke="currentColor"
-                stroke-width="1.5"
-              />
-              <path
-                d="M2 17c0-3.314 2.686-5 6-5"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-              />
-              <circle
-                cx="15"
-                cy="12"
-                r="2.5"
-                stroke="currentColor"
-                stroke-width="1.5"
-              />
-              <path
-                d="M12 18c0-2 1.343-3 3-3s3 1 3 3"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-              />
-            </svg>
-            Users
-          </a>
           <a href="reports.html" class="nav-item" id="nav-reports">
             <svg viewBox="0 0 20 20" fill="none">
               <path
@@ -192,24 +163,7 @@
             </svg>
             Analytics
           </a>
-          <a href="settings.html" class="nav-item" id="nav-settings">
-            <svg viewBox="0 0 20 20" fill="none">
-              <circle
-                cx="10"
-                cy="10"
-                r="2.5"
-                stroke="currentColor"
-                stroke-width="1.5"
-              />
-              <path
-                d="M10 2v1.5M10 16.5V18M2 10h1.5M16.5 10H18M4.22 4.22l1.06 1.06M14.72 14.72l1.06 1.06M4.22 15.78l1.06-1.06M14.72 5.28l1.06-1.06"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-              />
-            </svg>
-            Settings
-          </a>
+
           <button
             class="nav-item nav-logout"
             id="logout-btn"
@@ -282,7 +236,7 @@
               type="search"
               class="search-input"
               id="global-search"
-              placeholder="Search requests, offers, users…"
+              placeholder="Search requests, offers…"
               aria-label="Global search"
             />
           </div>
@@ -379,24 +333,7 @@
                   </svg>
                   My Profile
                 </button>
-                <button class="dropdown-item" id="dropdown-settings">
-                  <svg viewBox="0 0 20 20" fill="none">
-                    <circle
-                      cx="10"
-                      cy="10"
-                      r="2.5"
-                      stroke="currentColor"
-                      stroke-width="1.4"
-                    />
-                    <path
-                      d="M10 2v1.5M10 16.5V18M2 10h1.5M16.5 10H18M4.22 4.22l1.06 1.06M14.72 14.72l1.06 1.06M4.22 15.78l1.06-1.06M14.72 5.28l1.06-1.06"
-                      stroke="currentColor"
-                      stroke-width="1.4"
-                      stroke-linecap="round"
-                    />
-                  </svg>
-                  Settings
-                </button>
+
                 <div class="user-dropdown-divider"></div>
                 <button
                   class="dropdown-item dropdown-signout"
@@ -536,20 +473,26 @@
                           fill="currentColor"
                         />
                       </svg>
-                      <a href="mailto:ahmad.hassan@mawred.sa"
-                        >ahmad.hassan@mawred.sa</a
-                      >
+                      <a id="profile-email-link" href="#">—</a>
                     </div>
-                    <div class="profile-meta-row">
+                    <div
+                      class="profile-meta-row"
+                      id="profile-phone-row"
+                      style="display: none"
+                    >
                       <svg viewBox="0 0 20 20" fill="none">
                         <path
                           d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"
                           fill="currentColor"
                         />
                       </svg>
-                      +966 50 123 4567
+                      <span id="profile-phone">—</span>
                     </div>
-                    <div class="profile-meta-row">
+                    <div
+                      class="profile-meta-row"
+                      id="profile-location-row"
+                      style="display: none"
+                    >
                       <svg viewBox="0 0 20 20" fill="none">
                         <path
                           fill-rule="evenodd"
@@ -558,7 +501,7 @@
                           fill="currentColor"
                         />
                       </svg>
-                      Riyadh, Saudi Arabia
+                      <span id="profile-location">—</span>
                     </div>
                     <div class="profile-meta-row">
                       <svg viewBox="0 0 20 20" fill="none">
@@ -804,7 +747,7 @@
                               class="form-input"
                               id="field-phone"
                               type="tel"
-                              placeholder="+966 50 000 0000"
+                              placeholder="+20-10-xxxx-xxxx"
                             />
                           </div>
                         </div>
@@ -836,7 +779,7 @@
                               class="form-input"
                               id="field-location"
                               type="text"
-                              placeholder="Riyadh, Saudi Arabia"
+                              placeholder="Cairo, Egypt"
                             />
                           </div>
                         </div>
@@ -845,8 +788,8 @@
                             >Timezone</label
                           >
                           <select class="form-select" id="field-timezone">
-                            <option value="Asia/Riyadh">
-                              Asia/Riyadh (GMT+3)
+                            <option value="Africa/Cairo">
+                              Africa/Cairo (GMT+2)
                             </option>
                             <option value="Asia/Dubai">
                               Asia/Dubai (GMT+4)
@@ -1029,7 +972,7 @@
                       <div class="session-info">
                         <div class="session-name">Chrome on Windows</div>
                         <div class="session-meta">
-                          Riyadh, SA · 192.168.1.45 · Active now
+                          Cairo, EG · 192.168.1.45 · Active now
                         </div>
                       </div>
                       <span class="session-current">● This device</span>
@@ -1052,7 +995,7 @@
                       <div class="session-info">
                         <div class="session-name">Safari on iPhone</div>
                         <div class="session-meta">
-                          Riyadh, SA · 10.0.0.12 · 2 hours ago
+                          Cairo, EG · 10.0.0.12 · 2 hours ago
                         </div>
                       </div>
                       <button class="btn-revoke">Revoke</button>
@@ -1385,7 +1328,7 @@
                           Password changed successfully
                         </div>
                         <div class="act-desc">
-                          Security update from Chrome on Windows · Riyadh, SA
+                          Security update from Chrome on Windows · Cairo, EG
                         </div>
                       </div>
                       <div class="act-time">Mar 10</div>
@@ -1401,7 +1344,13 @@
       </div>
     </div>
 
+    <!-- Firebase CDN (compat SDK — works without a build tool) -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
     <script src="../js/auth.js"></script>
+    <script src="../js/firestore.js"></script>
     <script src="../js/profile.js"></script>
   </body>
 </html>

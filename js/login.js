@@ -1,26 +1,21 @@
 /* ============================================================
    MAWRED – RFQ Platform | Login Logic
-   Depends on: auth.js (loaded before this script in login.html)
+   Depends on: firebase-config.js, auth.js (loaded before this)
    ============================================================ */
 
 "use strict";
 
-const admin = {
-  email: ["admin123@gmail.com"],
-  password: ["123456789"],
-};
-
 /* ── DOM references ─────────────────────────────────────── */
-const emailInput = document.getElementById("email");
+const emailInput    = document.getElementById("email");
 const passwordInput = document.getElementById("password");
-const emailWrap = document.getElementById("email-wrap");
-const passwordWrap = document.getElementById("password-wrap");
-const emailError = document.getElementById("email-error");
+const emailWrap     = document.getElementById("email-wrap");
+const passwordWrap  = document.getElementById("password-wrap");
+const emailError    = document.getElementById("email-error");
 const passwordError = document.getElementById("password-error");
-const signinBtn = document.getElementById("signin-btn");
-const loginForm = document.getElementById("login-form");
-const tabRequester = document.getElementById("tab-requester");
-const tabSupplier = document.getElementById("tab-supplier");
+const signinBtn     = document.getElementById("signin-btn");
+const loginForm     = document.getElementById("login-form");
+const tabRequester  = document.getElementById("tab-requester");
+const tabSupplier   = document.getElementById("tab-supplier");
 
 /* ── Role Switch ────────────────────────────────────────── */
 let currentRole = "requester";
@@ -118,17 +113,9 @@ emailInput.addEventListener("input", () => {
 passwordInput.addEventListener("input", () => {
   const len = passwordInput.value.length;
   if (len === 0) {
-    showError(
-      passwordWrap,
-      passwordError,
-      "Password must be at least 8 characters",
-    );
-  } else if (len < 8) {
-    showError(
-      passwordWrap,
-      passwordError,
-      "Password must be at least 8 characters",
-    );
+    showError(passwordWrap, passwordError, "Password must be at least 6 characters");
+  } else if (len < 6) {
+    showError(passwordWrap, passwordError, "Password must be at least 6 characters");
   } else {
     clearError(passwordWrap, passwordError);
   }
@@ -138,22 +125,64 @@ passwordInput.addEventListener("blur", () => {
   const len = passwordInput.value.length;
   if (len === 0) {
     showError(passwordWrap, passwordError, "Password is required");
-  } else if (len < 8) {
-    showError(
-      passwordWrap,
-      passwordError,
-      "Password must be at least 8 characters",
-    );
+  } else if (len < 6) {
+    showError(passwordWrap, passwordError, "Password must be at least 6 characters");
   }
 });
 
-/* ── Admin credentials check ───────────────────────────── */
-function isAdminCredentials(email, password) {
-  return email === admin.email[0] && password === admin.password[0];
+/* ── Button loading state helpers ───────────────────────── */
+function setButtonLoading() {
+  signinBtn.classList.add("loading");
+  signinBtn.disabled = true;
+  signinBtn.textContent = "";
+
+  const spinner = document.createElement("svg");
+  spinner.setAttribute("class", "btn-icon");
+  spinner.setAttribute("viewBox", "0 0 24 24");
+  spinner.setAttribute("fill", "none");
+  spinner.innerHTML = `<circle cx="12" cy="12" r="9" stroke="rgba(255,255,255,0.3)" stroke-width="2.5"/>
+    <path d="M12 3a9 9 0 019 9" stroke="white" stroke-width="2.5" stroke-linecap="round"/>`;
+  spinner.style.animation = "spin 0.8s linear infinite";
+  signinBtn.appendChild(spinner);
+
+  const label = document.createElement("span");
+  label.textContent = "Signing in…";
+  signinBtn.appendChild(label);
 }
 
-/* ── Form submit ────────────────────────────────────────── */
-loginForm.addEventListener("submit", (e) => {
+function resetButton() {
+  signinBtn.classList.remove("loading");
+  signinBtn.disabled = false;
+  signinBtn.innerHTML = `
+    <svg class="btn-icon" viewBox="0 0 20 20" fill="none">
+      <path d="M3 10h14M10 4l7 6-7 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Sign In
+  `;
+}
+
+/* ── Firebase error → user-friendly message ─────────────── */
+function friendlyError(code) {
+  switch (code) {
+    case "auth/user-not-found":
+    case "auth/wrong-password":
+    case "auth/invalid-credential":
+      return "Invalid email or password";
+    case "auth/invalid-email":
+      return "Enter a valid email address";
+    case "auth/user-disabled":
+      return "This account has been disabled";
+    case "auth/too-many-requests":
+      return "Too many attempts — please try again later";
+    case "auth/network-request-failed":
+      return "Network error — check your connection";
+    default:
+      return "Sign-in failed — please try again";
+  }
+}
+
+/* ── Form submit (Firebase Auth) ────────────────────────── */
+loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   let valid = true;
@@ -173,12 +202,8 @@ loginForm.addEventListener("submit", (e) => {
   if (!passwordInput.value) {
     showError(passwordWrap, passwordError, "Password is required");
     valid = false;
-  } else if (passwordInput.value.length < 8) {
-    showError(
-      passwordWrap,
-      passwordError,
-      "Password must be at least 8 characters",
-    );
+  } else if (passwordInput.value.length < 6) {
+    showError(passwordWrap, passwordError, "Password must be at least 6 characters");
     valid = false;
   } else {
     clearError(passwordWrap, passwordError);
@@ -186,76 +211,49 @@ loginForm.addEventListener("submit", (e) => {
 
   if (!valid) return;
 
-  // Simulate loading
-  signinBtn.classList.add("loading");
-  signinBtn.disabled = true;
-  signinBtn.textContent = "";
+  setButtonLoading();
 
-  // Rebuild button content with spinner
-  const spinner = document.createElement("svg");
-  spinner.setAttribute("class", "btn-icon");
-  spinner.setAttribute("viewBox", "0 0 24 24");
-  spinner.setAttribute("fill", "none");
-  spinner.innerHTML = `<circle cx="12" cy="12" r="9" stroke="rgba(255,255,255,0.3)" stroke-width="2.5"/>
-    <path d="M12 3a9 9 0 019 9" stroke="white" stroke-width="2.5" stroke-linecap="round"/>`;
-  spinner.style.animation = "spin 0.8s linear infinite";
-  signinBtn.appendChild(spinner);
+  try {
+    // ── Real Firebase sign-in ──────────────────────────────
+    const userCredential = await fbAuth.signInWithEmailAndPassword(
+      emailInput.value.trim(),
+      passwordInput.value
+    );
 
-  const label = document.createElement("span");
-  label.textContent = "Signing in…";
-  signinBtn.appendChild(label);
+    const firebaseUser = userCredential.user;
 
-  setTimeout(() => {
-    const emailVal = emailInput.value.trim();
-    const passwordVal = passwordInput.value;
+    // Try to get admin profile from Firestore (name, role)
+    let name = firebaseUser.displayName || "Admin";
+    let role = "Administrator";
 
-    if (isAdminCredentials(emailVal, passwordVal)) {
-      // ── Save session ──────────────────────────────────────
-      saveSession({
-        name: "Ahmad Hassan",
-        role: "Administrator",
-        email: emailVal,
-      });
-
-      showToast("Welcome back, Ahmad Hassan!");
-      setTimeout(() => {
-        window.location.href = "dashboard.html";
-      }, 600);
-    } else {
-      // Wrong credentials – reset button and show error
-      signinBtn.classList.remove("loading");
-      signinBtn.disabled = false;
-      signinBtn.innerHTML = `
-        <svg class="btn-icon" viewBox="0 0 20 20" fill="none">
-          <path d="M3 10h14M10 4l7 6-7 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        Sign In
-      `;
-      showError(emailWrap, emailError, "Invalid email or password");
-      showError(passwordWrap, passwordError, "Invalid email or password");
-      showToast("Access denied — incorrect credentials");
+    if (typeof getAdminProfile === "function") {
+      try {
+        const profile = await getAdminProfile(firebaseUser.uid);
+        if (profile) {
+          name = profile.name || name;
+          role = profile.role || role;
+        }
+      } catch (_) {
+        // Firestore unreachable — use Firebase Auth displayName
+      }
     }
-  }, 1800);
+
+    // ── Save session ───────────────────────────────────────
+    saveSession({ name, role, email: firebaseUser.email });
+
+    showToast(`Welcome back, ${name}!`);
+    setTimeout(() => {
+      window.location.href = "dashboard.html";
+    }, 600);
+
+  } catch (err) {
+    resetButton();
+    const msg = friendlyError(err.code);
+    showError(emailWrap, emailError, msg);
+    showError(passwordWrap, passwordError, msg);
+    showToast("Access denied — " + msg);
+  }
 });
-
-/* ── Alt buttons ────────────────────────────────────────── */
-// document.getElementById('biometric-btn').addEventListener('click', () => {
-//   showToast('Biometric authentication initiated…');
-// });
-
-// document.getElementById('sso-btn').addEventListener('click', () => {
-//   showToast('Redirecting to SSO provider…');
-// });
-
-// document.getElementById('forgot-link').addEventListener('click', (e) => {
-//   e.preventDefault();
-//   showToast('Password reset link sent to your email!');
-// });
-
-// document.getElementById('register-link').addEventListener('click', (e) => {
-//   e.preventDefault();
-//   showToast('Redirecting to registration…');
-// });
 
 /* ── Toast notification ─────────────────────────────────── */
 function showToast(message) {
@@ -275,8 +273,7 @@ function showToast(message) {
   }, 3000);
 }
 
-/* ── Initial state: show password error as per design ───── */
-// (matches the screenshot showing the error by default)
+/* ── Initial state ──────────────────────────────────────── */
 window.addEventListener("DOMContentLoaded", () => {
   passwordWrap.classList.add("error");
 });

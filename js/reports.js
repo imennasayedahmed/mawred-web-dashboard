@@ -41,241 +41,7 @@ requireAuth();
 })();
 
 /* ── 4. Mock dataset ─────────────────────────────────────── */
-const RAW_REPORTS = [
-  {
-    id: "RPT-2847",
-    type: "request",
-    status: "pending",
-    title: "Bulk supply of medical-grade N95 masks — 50,000 units urgent",
-    reason:
-      "Fraudulent pricing — offer is 340% above typical market rate to lure buyers into a scam transaction.",
-    reporter: {
-      name: "Fatima Al-Harbi",
-      handle: "@fatima.alharbi",
-      initials: "FA",
-      color: "green",
-    },
-    submitted: new Date("2025-03-13"),
-    daysAgo: 1,
-    reportCount: 1,
-    resolvedBy: null,
-    resolvedDate: null,
-  },
-  {
-    id: "RPT-2846",
-    type: "offer",
-    status: "pending",
-    title: "Premium office furniture supply — miscellaneous items",
-    reason:
-      "Inappropriate content — misleading claims about premium branded items being offered at cost price.",
-    reporter: {
-      name: "Omar Khalid",
-      handle: "@omar.khalid",
-      initials: "OK",
-      color: "blue",
-    },
-    submitted: new Date("2025-03-13"),
-    daysAgo: 1,
-    reportCount: 2,
-    resolvedBy: null,
-    resolvedDate: null,
-  },
-  {
-    id: "RPT-2840",
-    type: "request",
-    status: "resolved",
-    title: "IT consultancy services for ministry digital transformation",
-    reason:
-      "Spam — duplicate request posted multiple times across categories within a short time window.",
-    reporter: {
-      name: "Nasser Al-Mutairi",
-      handle: "@nasser.almutairi",
-      initials: "NM",
-      color: "purple",
-    },
-    submitted: new Date("2025-03-11"),
-    daysAgo: 3,
-    reportCount: 1,
-    resolvedBy: "@sarah.admin",
-    resolvedDate: new Date("2025-03-11"),
-    resolvedAction: "Content removed",
-  },
-  {
-    id: "RPT-2835",
-    type: "offer",
-    status: "pending",
-    title: "Industrial cooling units — bulk procurement Q1",
-    reason:
-      "Suspicious contact info — supplier phone number is unregistered and email bounces.",
-    reporter: {
-      name: "Layla Farouk",
-      handle: "@layla.farouk",
-      initials: "LF",
-      color: "amber",
-    },
-    submitted: new Date("2025-03-10"),
-    daysAgo: 4,
-    reportCount: 3,
-    resolvedBy: null,
-    resolvedDate: null,
-  },
-  {
-    id: "RPT-2831",
-    type: "user",
-    status: "pending",
-    title: "User account: Gulf Trading LLC",
-    reason:
-      "Fake business registration — VAT number doesn't match any official records in the national database.",
-    reporter: {
-      name: "Sarah Al-Ahmadi",
-      handle: "@sarah.admin",
-      initials: "SA",
-      color: "green",
-    },
-    submitted: new Date("2025-03-09"),
-    daysAgo: 5,
-    reportCount: 1,
-    resolvedBy: null,
-    resolvedDate: null,
-  },
-  {
-    id: "RPT-2828",
-    type: "request",
-    status: "resolved",
-    title: "Office supplies — stationery and printer consumables",
-    reason:
-      "Duplicate — identical request already exists under REQ-2815 submitted by the same account.",
-    reporter: {
-      name: "Omar Khalid",
-      handle: "@omar.khalid",
-      initials: "OK",
-      color: "blue",
-    },
-    submitted: new Date("2025-03-08"),
-    daysAgo: 6,
-    reportCount: 1,
-    resolvedBy: "@fatima.alharbi",
-    resolvedDate: new Date("2025-03-09"),
-    resolvedAction: "Request dismissed",
-  },
-  {
-    id: "RPT-2822",
-    type: "offer",
-    status: "dismissed",
-    title: "Solar panel installation — commercial buildings",
-    reason:
-      "Price manipulation — offer submitted with inflated price then quickly edited to undercut competition.",
-    reporter: {
-      name: "Youssef Nabil",
-      handle: "@youssef.nabil",
-      initials: "YN",
-      color: "purple",
-    },
-    submitted: new Date("2025-03-07"),
-    daysAgo: 7,
-    reportCount: 1,
-    resolvedBy: "@sarah.admin",
-    resolvedDate: new Date("2025-03-08"),
-    resolvedAction: "Report dismissed",
-  },
-  {
-    id: "RPT-2818",
-    type: "request",
-    status: "pending",
-    title: "Heavy machinery rental — crane and excavator fleet",
-    reason:
-      "Misleading specifications — equipment specs listed don't match the actual available units per supplier confirmation.",
-    reporter: {
-      name: "Fatima Al-Harbi",
-      handle: "@fatima.alharbi",
-      initials: "FA",
-      color: "green",
-    },
-    submitted: new Date("2025-03-06"),
-    daysAgo: 8,
-    reportCount: 2,
-    resolvedBy: null,
-    resolvedDate: null,
-  },
-  {
-    id: "RPT-2814",
-    type: "user",
-    status: "resolved",
-    title: "User account: Riyadh Express Logistics",
-    reason:
-      "Unverified credentials — company registration certificate appears digitally altered.",
-    reporter: {
-      name: "Nasser Al-Mutairi",
-      handle: "@nasser.almutairi",
-      initials: "NM",
-      color: "purple",
-    },
-    submitted: new Date("2025-03-05"),
-    daysAgo: 9,
-    reportCount: 4,
-    resolvedBy: "@sarah.admin",
-    resolvedDate: new Date("2025-03-06"),
-    resolvedAction: "Account suspended",
-  },
-  {
-    id: "RPT-2809",
-    type: "offer",
-    status: "pending",
-    title: "Pharmaceutical packaging — sterile blister packs",
-    reason:
-      "Missing certifications — GMP compliance documentation not attached as required for medical-grade supplies.",
-    reporter: {
-      name: "Layla Farouk",
-      handle: "@layla.farouk",
-      initials: "LF",
-      color: "amber",
-    },
-    submitted: new Date("2025-03-04"),
-    daysAgo: 10,
-    reportCount: 1,
-    resolvedBy: null,
-    resolvedDate: null,
-  },
-  {
-    id: "RPT-2803",
-    type: "request",
-    status: "pending",
-    title: "Security camera systems — government facility upgrade",
-    reason:
-      "Suspected coordinated bidding — three separate accounts submitted near-identical offers within minutes.",
-    reporter: {
-      name: "Omar Khalid",
-      handle: "@omar.khalid",
-      initials: "OK",
-      color: "blue",
-    },
-    submitted: new Date("2025-03-03"),
-    daysAgo: 11,
-    reportCount: 5,
-    resolvedBy: null,
-    resolvedDate: null,
-  },
-  {
-    id: "RPT-2798",
-    type: "offer",
-    status: "dismissed",
-    title: "Catering services — corporate events Q2",
-    reason:
-      "Unverified vendor — no business license or health inspection certificate provided.",
-    reporter: {
-      name: "Sarah Al-Ahmadi",
-      handle: "@sarah.admin",
-      initials: "SA",
-      color: "green",
-    },
-    submitted: new Date("2025-03-02"),
-    daysAgo: 12,
-    reportCount: 1,
-    resolvedBy: "@fatima.alharbi",
-    resolvedDate: new Date("2025-03-03"),
-    resolvedAction: "Report dismissed",
-  },
-];
+
 
 /* ── 5. State ─────────────────────────────────────────────── */
 const state = {
@@ -289,7 +55,7 @@ const state = {
 };
 
 // Live report list (supports removal)
-let reports = RAW_REPORTS.map((r) => ({ ...r }));
+let reports = [];
 
 /* ── 6. Derived tab counts ───────────────────────────────── */
 function tabCounts() {
@@ -311,10 +77,11 @@ function escapeHtml(s) {
 
 function formatDate(d) {
   if (!(d instanceof Date)) return "—";
-  return d.toLocaleDateString("en-US", {
+  return d.toLocaleDateString("en-EG", {
     month: "short",
     day: "numeric",
     year: "numeric",
+    timeZone: "Africa/Cairo"
   });
 }
 
@@ -603,7 +370,21 @@ function confirmRemove() {
 
 /* ── 15. Event wiring ────────────────────────────────────── */
 document.addEventListener("DOMContentLoaded", () => {
+  /* Populate navbar + dropdown with session user */
+  const _u = getUser();
+  if (_u) {
+    const _ini = getInitials(_u.name || "Admin");
+    const _set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    _set("navbar-user-name",   _u.name || "Admin");
+    _set("navbar-user-role",   _u.role || "Administrator");
+    _set("navbar-user-avatar", _ini);
+    _set("dropdown-name",      _u.name || "Admin");
+    _set("dropdown-role",      _u.role || "Administrator");
+    _set("dropdown-avatar",    _ini);
+  }
+
   /* Tabs */
+
   document.querySelectorAll(".tab-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       document
@@ -751,14 +532,26 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("dropdown-profile")?.addEventListener("click", () => {
     window.location.href = "profile.html";
   });
-  document
-    .getElementById("dropdown-settings")
-    ?.addEventListener("click", () => {
-      window.location.href = "settings.html";
-    });
 
-  /* Initial render */
-  refresh();
+
+  /* Initial render — Firebase only */
+  if (typeof getReports === "function") {
+    const container = document.getElementById("reports-list");
+    if (container) {
+      container.innerHTML = `<div class="reports-empty"><p>Loading reports…</p></div>`;
+    }
+    getReports().then((res) => {
+      reports = res;
+      refresh();
+    }).catch((err) => {
+      console.error("Failed to load reports from Firestore:", err);
+      reports = [];
+      refresh();
+    });
+  } else {
+    reports = [];
+    refresh();
+  }
 });
 
 /* ── 16. CSV Export ──────────────────────────────────────── */
@@ -803,9 +596,10 @@ function exportCSV() {
 
 function formatDate(d) {
   if (!(d instanceof Date)) return "—";
-  return d.toLocaleDateString("en-US", {
+  return d.toLocaleDateString("en-EG", {
     month: "short",
     day: "numeric",
     year: "numeric",
+    timeZone: "Africa/Cairo"
   });
 }

@@ -42,72 +42,12 @@ requireAuth();
 })();
 
 /* ── 4. Mock dataset ─────────────────────────────────────── */
-const SUPPLIERS = [
-  { name: "Al-Tawreed Trading", initials: "AT", color: "green" },
-  { name: "Najd Suppliers Co.", initials: "NS", color: "amber" },
-  { name: "Riyadh Hardware Ltd", initials: "RH", color: "blue" },
-  { name: "Gulf Equipment Est.", initials: "GE", color: "purple" },
-  { name: "Saudi Industrial Co.", initials: "SI", color: "rose" },
-  { name: "Mada Tech Solutions", initials: "MT", color: "teal" },
-  { name: "Jeddah Commerce Group", initials: "JC", color: "indigo" },
-  { name: "Dammam Materials Inc.", initials: "DM", color: "slate" },
-  { name: "Arabian Steel Works", initials: "AS", color: "green" },
-  { name: "PetroParts MEA", initials: "PP", color: "amber" },
-  { name: "SealTech Industries", initials: "ST", color: "blue" },
-  { name: "Gulf Hydraulics Co.", initials: "GH", color: "purple" },
-];
 
-const STATUSES = [
-  "pending",
-  "pending",
-  "accepted",
-  "rejected",
-  "flagged",
-  "pending",
-  "accepted",
-  "pending",
-];
-const REQ_IDS = Array.from(
-  { length: 30 },
-  (_, i) => `REQ-${String(2847 - i).padStart(4, "0")}`,
-);
+let ALL_OFFERS = [];
 
-function generateOffers() {
-  const rows = [];
-  const base = new Date("2025-03-12");
-  for (let i = 0; i < 120; i++) {
-    const d = new Date(base);
-    d.setDate(base.getDate() - Math.floor(i / 4));
-    const supplier = SUPPLIERS[i % SUPPLIERS.length];
-    const status = STATUSES[i % STATUSES.length];
-    const price = (12 + (i % 89)) * 500 + (i % 7) * 100;
-    const delivery = 2 + (i % 20);
-    const reqId = REQ_IDS[i % REQ_IDS.length];
-    rows.push({
-      id: `OFR-${String(i + 1).padStart(4, "0")}`,
-      supplier,
-      reqId,
-      price,
-      delivery,
-      submitted: d,
-      status,
-      flagged: status === "flagged",
-    });
-  }
-  return rows;
-}
-
-const ALL_OFFERS = generateOffers();
 
 /* ── 5. Derived stats ────────────────────────────────────── */
-const STATS = (function () {
-  const total = ALL_OFFERS.length;
-  const pending = ALL_OFFERS.filter((o) => o.status === "pending").length;
-  const flagged = ALL_OFFERS.filter((o) => o.flagged).length;
-  const accepted = ALL_OFFERS.filter((o) => o.status === "accepted").length;
-  const todayPending = Math.floor(pending * 0.16); // simulated "today" subset
-  return { total, pending, flagged, accepted, todayPending };
-})();
+const STATS = { total: 0, pending: 0, flagged: 0, accepted: 0, todayPending: 0 };
 
 /* ── 6. State ─────────────────────────────────────────────── */
 const state = {
@@ -121,15 +61,17 @@ const state = {
 };
 
 /* ── 7. Utility helpers ───────────────────────────────────── */
-function formatSAR(n) {
-  return "SAR " + n.toLocaleString("en-US");
+function formatEGP(n) {
+  if (n === undefined || n === null) return "—";
+  return "EGP " + n.toLocaleString("en-EG", { minimumFractionDigits: 0 });
 }
 
 function formatDate(d) {
-  return d.toLocaleDateString("en-US", {
+  return d.toLocaleDateString("en-EG", {
     month: "short",
     day: "numeric",
     year: "numeric",
+    timeZone: "Africa/Cairo"
   });
 }
 
@@ -233,15 +175,30 @@ function applyFilters() {
 function renderStats() {
   const el = (id) => document.getElementById(id);
   if (el("stat-total-offers"))
-    el("stat-total-offers").textContent = STATS.total.toLocaleString();
+    el("stat-total-offers").textContent = STATS.total.toLocaleString("en-EG");
   if (el("stat-pending-review"))
-    el("stat-pending-review").textContent = STATS.pending.toLocaleString();
+    el("stat-pending-review").textContent = STATS.pending.toLocaleString("en-EG");
   if (el("stat-today-pending"))
     el("stat-today-pending").textContent = `${STATS.todayPending} today`;
   if (el("stat-flagged-offers"))
-    el("stat-flagged-offers").textContent = STATS.flagged.toLocaleString();
+    el("stat-flagged-offers").textContent = STATS.flagged.toLocaleString("en-EG");
   if (el("stat-accepted-offers"))
-    el("stat-accepted-offers").textContent = STATS.accepted.toLocaleString();
+    el("stat-accepted-offers").textContent = STATS.accepted.toLocaleString("en-EG");
+}
+
+function updateStatsAndRender() {
+  const total    = ALL_OFFERS.length;
+  const pending  = ALL_OFFERS.filter((o) => o.status === "pending").length;
+  const flagged  = ALL_OFFERS.filter((o) => o.flagged).length;
+  const accepted = ALL_OFFERS.filter((o) => o.status === "accepted").length;
+  const now = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const todayPending = ALL_OFFERS.filter((o) => o.status === "pending" && new Date(o.submitted) >= todayStart).length;
+  if (typeof STATS !== "undefined") {
+    STATS.total = total; STATS.pending = pending; STATS.flagged = flagged;
+    STATS.accepted = accepted; STATS.todayPending = todayPending;
+  }
+  renderStats();
 }
 
 /* ── 11. Render table ────────────────────────────────────── */
@@ -285,7 +242,7 @@ function renderTable(rows) {
           ${o.reqId}
         </a>
       </td>
-      <td class="price-cell">${formatSAR(o.price)}</td>
+      <td class="price-cell">${formatEGP(o.price)}</td>
       <td class="delivery-cell">${o.delivery} day${o.delivery !== 1 ? "s" : ""}</td>
       <td class="submitted-cell">${formatDate(o.submitted)}</td>
       <td><span class="offer-badge ${o.status}">${o.status.charAt(0).toUpperCase() + o.status.slice(1)}</span></td>
@@ -383,11 +340,21 @@ function populateReqFilter() {
 
 /* ── 16. Wire controls ───────────────────────────────────── */
 document.addEventListener("DOMContentLoaded", () => {
-  /* Stat cards */
-  renderStats();
+  // Stats and Request filter dropdown will be rendered after live Firestore data loads
 
-  /* Populate req filter */
-  populateReqFilter();
+  /* Populate navbar + dropdown with session user */
+  const _user = getUser();
+  if (_user) {
+    const _ini = getInitials(_user.name || "Admin");
+    const _set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    _set("navbar-user-name",   _user.name || "Admin");
+    _set("navbar-user-role",   _user.role || "Administrator");
+    _set("navbar-user-avatar", _ini);
+    _set("dropdown-name",      _user.name || "Admin");
+    _set("dropdown-role",      _user.role || "Administrator");
+    _set("dropdown-avatar",    _ini);
+  }
+
 
   /* Anomaly banner dismiss */
   document
@@ -481,15 +448,30 @@ document.addEventListener("DOMContentLoaded", () => {
       const id = flagBtn.dataset.id;
       const offer = ALL_OFFERS.find((o) => o.id === id);
       if (!offer) return;
+      const oldFlagged = !offer.flagged;
       offer.flagged = !offer.flagged;
       offer.status = offer.flagged ? "flagged" : "pending";
+      
       showToast(
         offer.flagged
           ? `Offer ${id} flagged for review.`
           : `Flag removed from ${id}.`,
         offer.flagged ? "warning" : "success",
       );
+      updateStatsAndRender();
       refresh();
+
+      if (typeof updateOfferFlag === "function") {
+        updateOfferFlag(id, offer.flagged).then((success) => {
+          if (!success) {
+            offer.flagged = oldFlagged;
+            offer.status = oldFlagged ? "flagged" : "pending";
+            showToast("Failed to update flag in database.", "error");
+            updateStatsAndRender();
+            refresh();
+          }
+        });
+      }
     }
   });
 
@@ -510,6 +492,23 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "profile.html";
   });
 
+
+  /* User chip — open/close dropdown */
+  const chip     = document.getElementById("user-chip");
+  const dropdown = document.getElementById("user-dropdown");
+  const caret    = document.getElementById("user-caret");
+  chip?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const open = dropdown.classList.toggle("open");
+    chip.setAttribute("aria-expanded", open);
+    if (caret) caret.style.transform = open ? "rotate(180deg)" : "";
+  });
+  document.addEventListener("click", () => {
+    dropdown?.classList.remove("open");
+    chip?.setAttribute("aria-expanded", "false");
+    if (caret) caret.style.transform = "";
+  });
+
   /* Keyboard: Escape closes any open dropdown */
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
@@ -520,7 +519,30 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* Initial render */
-  refresh();
+  /* Initial render — Firebase only */
+  if (typeof getOffers === "function") {
+    const tbody = document.getElementById("offers-tbody");
+    if (tbody) {
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-muted);">Loading offers…</td></tr>`;
+    }
+    getOffers().then((res) => {
+      ALL_OFFERS = res;
+      updateStatsAndRender();
+      populateReqFilter();
+      refresh();
+    }).catch((err) => {
+      console.error("Failed to load offers from Firestore:", err);
+      ALL_OFFERS = [];
+      updateStatsAndRender();
+      populateReqFilter();
+      refresh();
+    });
+  } else {
+    ALL_OFFERS = [];
+    updateStatsAndRender();
+    populateReqFilter();
+    refresh();
+  }
 });
 
 /* ── 17. CSV Export ──────────────────────────────────────── */
@@ -530,7 +552,7 @@ function exportCSV() {
     "Offer ID",
     "Supplier",
     "Linked Request",
-    "Price (SAR)",
+    "Price (EGP)",
     "Delivery (days)",
     "Submitted",
     "Status",
