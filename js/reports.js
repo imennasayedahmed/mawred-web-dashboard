@@ -1,8 +1,5 @@
 /* ============================================================
-   MAWRED – RFQ Platform | Reports & Flagged Content Logic
-   Features: tab filtering, search, type/status/date filters,
-             paginated report cards, Remove confirm modal,
-             Warn User toast, View Details stub, CSV export
+   MAWRED – RFQ Platform | Reports page
    ============================================================ */
 
 "use strict";
@@ -42,7 +39,6 @@ requireAuth();
 
 /* ── 4. Mock dataset ─────────────────────────────────────── */
 
-
 /* ── 5. State ─────────────────────────────────────────────── */
 const state = {
   tab: "all", // all | flagged-requests | flagged-offers
@@ -81,7 +77,7 @@ function formatDate(d) {
     month: "short",
     day: "numeric",
     year: "numeric",
-    timeZone: "Africa/Cairo"
+    timeZone: "Africa/Cairo",
   });
 }
 
@@ -374,13 +370,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const _u = getUser();
   if (_u) {
     const _ini = getInitials(_u.name || "Admin");
-    const _set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-    _set("navbar-user-name",   _u.name || "Admin");
-    _set("navbar-user-role",   _u.role || "Administrator");
+    const _set = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    };
+    _set("navbar-user-name", _u.name || "Admin");
+    _set("navbar-user-role", _u.role || "Administrator");
     _set("navbar-user-avatar", _ini);
-    _set("dropdown-name",      _u.name || "Admin");
-    _set("dropdown-role",      _u.role || "Administrator");
-    _set("dropdown-avatar",    _ini);
+    _set("dropdown-name", _u.name || "Admin");
+    _set("dropdown-role", _u.role || "Administrator");
+    _set("dropdown-avatar", _ini);
   }
 
   /* Tabs */
@@ -533,21 +532,22 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "profile.html";
   });
 
-
   /* Initial render — Firebase only */
   if (typeof getReports === "function") {
     const container = document.getElementById("reports-list");
     if (container) {
       container.innerHTML = `<div class="reports-empty"><p>Loading reports…</p></div>`;
     }
-    getReports().then((res) => {
-      reports = res;
-      refresh();
-    }).catch((err) => {
-      console.error("Failed to load reports from Firestore:", err);
-      reports = [];
-      refresh();
-    });
+    getReports()
+      .then((res) => {
+        reports = res;
+        refresh();
+      })
+      .catch((err) => {
+        console.error("Failed to load reports from Firestore:", err);
+        reports = [];
+        refresh();
+      });
   } else {
     reports = [];
     refresh();
@@ -600,6 +600,6 @@ function formatDate(d) {
     month: "short",
     day: "numeric",
     year: "numeric",
-    timeZone: "Africa/Cairo"
+    timeZone: "Africa/Cairo",
   });
 }

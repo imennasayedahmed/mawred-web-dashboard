@@ -1,8 +1,3 @@
-/* ============================================================
-   MAWRED – RFQ Platform | Requests Page Styles
-   Loaded after dashboard.css — inherits all CSS custom props.
-   ============================================================ */
-
 /* ════════════════════════════════════════════════════════════
    TOOLBAR
    ════════════════════════════════════════════════════════════ */
@@ -60,12 +55,17 @@
   font-size: 0.82rem;
   color: var(--text-primary);
   outline: none;
-  transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+  transition:
+    border-color var(--transition),
+    background var(--transition),
+    box-shadow var(--transition);
   -webkit-appearance: none;
   appearance: none;
 }
 
-.toolbar-search input[type="search"]::placeholder { color: var(--text-muted); }
+.toolbar-search input[type="search"]::placeholder {
+  color: var(--text-muted);
+}
 
 .toolbar-search input[type="search"]:focus {
   background: #fff;
@@ -106,7 +106,10 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M4 7l6 6 6-6' stroke='%236b7280' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 10px center;
-  transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+  transition:
+    border-color var(--transition),
+    background var(--transition),
+    box-shadow var(--transition);
 }
 
 .toolbar-filter select:focus {
@@ -129,10 +132,16 @@
   border-radius: var(--radius-sm);
   cursor: pointer;
   color: var(--text-secondary);
-  transition: border-color var(--transition), color var(--transition), background var(--transition);
+  transition:
+    border-color var(--transition),
+    color var(--transition),
+    background var(--transition);
 }
 
-.btn-icon svg { width: 16px; height: 16px; }
+.btn-icon svg {
+  width: 16px;
+  height: 16px;
+}
 
 .btn-icon:hover {
   border-color: var(--green-primary);
@@ -154,10 +163,16 @@
   font-weight: 600;
   color: #ef4444;
   cursor: pointer;
-  transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+  transition:
+    border-color var(--transition),
+    background var(--transition),
+    box-shadow var(--transition);
 }
 
-.btn-export-outline svg { width: 15px; height: 15px; }
+.btn-export-outline svg {
+  width: 15px;
+  height: 15px;
+}
 
 .btn-export-outline:hover {
   border-color: #ef4444;
@@ -180,10 +195,16 @@
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 3px 12px rgba(34, 197, 94, 0.35);
-  transition: filter var(--transition), box-shadow var(--transition), transform var(--transition);
+  transition:
+    filter var(--transition),
+    box-shadow var(--transition),
+    transform var(--transition);
 }
 
-.btn-primary svg { width: 16px; height: 16px; }
+.btn-primary svg {
+  width: 16px;
+  height: 16px;
+}
 
 .btn-primary:hover {
   filter: brightness(1.07);
@@ -229,18 +250,26 @@
   transition: color var(--transition);
 }
 
-.data-table thead th.sortable:hover { color: var(--green-dark); }
+.data-table thead th.sortable:hover {
+  color: var(--green-dark);
+}
 
-.data-table thead th.actions-col { width: 48px; }
+.data-table thead th.actions-col {
+  width: 48px;
+}
 
 .data-table tbody tr {
   border-bottom: 1px solid #f3f4f6;
   transition: background var(--transition);
 }
 
-.data-table tbody tr:last-child { border-bottom: none; }
+.data-table tbody tr:last-child {
+  border-bottom: none;
+}
 
-.data-table tbody tr:hover { background: #f8fffe; }
+.data-table tbody tr:hover {
+  background: #f8fffe;
+}
 
 .data-table tbody td {
   padding: 13px 16px;
@@ -257,7 +286,9 @@
   transition: color var(--transition);
 }
 
-.req-title:hover { color: var(--green-primary); }
+.req-title:hover {
+  color: var(--green-primary);
+}
 
 .req-id {
   font-size: 0.72rem;
@@ -288,12 +319,24 @@
   letter-spacing: 0.02em;
 }
 
-.req-avatar.blue   { background: linear-gradient(135deg, #60a5fa, #2563eb); }
-.req-avatar.purple { background: linear-gradient(135deg, #a78bfa, #7c3aed); }
-.req-avatar.amber  { background: linear-gradient(135deg, #fbbf24, #d97706); }
-.req-avatar.rose   { background: linear-gradient(135deg, #fb7185, #e11d48); }
-.req-avatar.teal   { background: linear-gradient(135deg, #2dd4bf, #0f766e); }
-.req-avatar.indigo { background: linear-gradient(135deg, #818cf8, #4338ca); }
+.req-avatar.blue {
+  background: linear-gradient(135deg, #60a5fa, #2563eb);
+}
+.req-avatar.purple {
+  background: linear-gradient(135deg, #a78bfa, #7c3aed);
+}
+.req-avatar.amber {
+  background: linear-gradient(135deg, #fbbf24, #d97706);
+}
+.req-avatar.rose {
+  background: linear-gradient(135deg, #fb7185, #e11d48);
+}
+.req-avatar.teal {
+  background: linear-gradient(135deg, #2dd4bf, #0f766e);
+}
+.req-avatar.indigo {
+  background: linear-gradient(135deg, #818cf8, #4338ca);
+}
 
 .requester-name {
   font-size: 0.84rem;
@@ -323,17 +366,37 @@
   flex-shrink: 0;
 }
 
-.badge.open          { background: #dcfce7; color: #15803d; }
-.badge.open::before  { background: #22c55e; }
+.badge.open {
+  background: #dcfce7;
+  color: #15803d;
+}
+.badge.open::before {
+  background: #22c55e;
+}
 
-.badge.in-progress         { background: #fef3c7; color: #b45309; }
-.badge.in-progress::before { background: #f59e0b; }
+.badge.in-progress {
+  background: #fef3c7;
+  color: #b45309;
+}
+.badge.in-progress::before {
+  background: #f59e0b;
+}
 
-.badge.completed         { background: #e5e7eb; color: #374151; }
-.badge.completed::before { background: #6b7280; }
+.badge.completed {
+  background: #e5e7eb;
+  color: #374151;
+}
+.badge.completed::before {
+  background: #6b7280;
+}
 
-.badge.cancelled         { background: #fef2f2; color: #b91c1c; }
-.badge.cancelled::before { background: #ef4444; }
+.badge.cancelled {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+.badge.cancelled::before {
+  background: #ef4444;
+}
 
 /* ── Other cells ─────────────────────────────────────────── */
 .budget-cell {
@@ -360,10 +423,15 @@
   border-radius: 8px;
   cursor: pointer;
   color: var(--text-muted);
-  transition: background var(--transition), color var(--transition);
+  transition:
+    background var(--transition),
+    color var(--transition);
 }
 
-.btn-view svg { width: 16px; height: 16px; }
+.btn-view svg {
+  width: 16px;
+  height: 16px;
+}
 
 .btn-view:hover {
   background: var(--green-light);
@@ -439,10 +507,16 @@
   font-weight: 500;
   color: var(--text-secondary);
   cursor: pointer;
-  transition: border-color var(--transition), color var(--transition), background var(--transition);
+  transition:
+    border-color var(--transition),
+    color var(--transition),
+    background var(--transition);
 }
 
-.page-btn svg { width: 14px; height: 14px; }
+.page-btn svg {
+  width: 14px;
+  height: 14px;
+}
 
 .page-btn:hover:not(:disabled) {
   border-color: var(--green-primary);
@@ -502,16 +576,32 @@
    RESPONSIVE OVERRIDES
    ════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  .toolbar { flex-direction: column; align-items: stretch; }
-  .toolbar-left { flex-direction: column; }
-  .toolbar-search input[type="search"] { width: 100%; }
-  .toolbar-search input[type="search"]:focus { width: 100%; }
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .toolbar-left {
+    flex-direction: column;
+  }
+  .toolbar-search input[type="search"] {
+    width: 100%;
+  }
+  .toolbar-search input[type="search"]:focus {
+    width: 100%;
+  }
   .data-table thead th:nth-child(4),
-  .data-table tbody td:nth-child(4) { display: none; } /* hide Budget on mobile */
+  .data-table tbody td:nth-child(4) {
+    display: none;
+  } /* hide Budget on mobile */
 }
 
 @media (max-width: 480px) {
   .data-table thead th:nth-child(5),
-  .data-table tbody td:nth-child(5) { display: none; } /* hide Created on very small */
-  .pagination { flex-direction: column; align-items: flex-start; }
+  .data-table tbody td:nth-child(5) {
+    display: none;
+  } /* hide Created on very small */
+  .pagination {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }

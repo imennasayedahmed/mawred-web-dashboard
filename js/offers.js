@@ -1,8 +1,5 @@
 /* ============================================================
-   MAWRED – RFQ Platform | Offers Page Logic
-   Features: stat cards, anomaly banner, live search,
-             status/request filter, sortable table,
-             pagination, flag toggle, view nav, CSV export
+   MAWRED – RFQ Platform | Offers Page
    ============================================================ */
 
 "use strict";
@@ -45,9 +42,14 @@ requireAuth();
 
 let ALL_OFFERS = [];
 
-
 /* ── 5. Derived stats ────────────────────────────────────── */
-const STATS = { total: 0, pending: 0, flagged: 0, accepted: 0, todayPending: 0 };
+const STATS = {
+  total: 0,
+  pending: 0,
+  flagged: 0,
+  accepted: 0,
+  todayPending: 0,
+};
 
 /* ── 6. State ─────────────────────────────────────────────── */
 const state = {
@@ -71,7 +73,7 @@ function formatDate(d) {
     month: "short",
     day: "numeric",
     year: "numeric",
-    timeZone: "Africa/Cairo"
+    timeZone: "Africa/Cairo",
   });
 }
 
@@ -177,26 +179,34 @@ function renderStats() {
   if (el("stat-total-offers"))
     el("stat-total-offers").textContent = STATS.total.toLocaleString("en-EG");
   if (el("stat-pending-review"))
-    el("stat-pending-review").textContent = STATS.pending.toLocaleString("en-EG");
+    el("stat-pending-review").textContent =
+      STATS.pending.toLocaleString("en-EG");
   if (el("stat-today-pending"))
     el("stat-today-pending").textContent = `${STATS.todayPending} today`;
   if (el("stat-flagged-offers"))
-    el("stat-flagged-offers").textContent = STATS.flagged.toLocaleString("en-EG");
+    el("stat-flagged-offers").textContent =
+      STATS.flagged.toLocaleString("en-EG");
   if (el("stat-accepted-offers"))
-    el("stat-accepted-offers").textContent = STATS.accepted.toLocaleString("en-EG");
+    el("stat-accepted-offers").textContent =
+      STATS.accepted.toLocaleString("en-EG");
 }
 
 function updateStatsAndRender() {
-  const total    = ALL_OFFERS.length;
-  const pending  = ALL_OFFERS.filter((o) => o.status === "pending").length;
-  const flagged  = ALL_OFFERS.filter((o) => o.flagged).length;
+  const total = ALL_OFFERS.length;
+  const pending = ALL_OFFERS.filter((o) => o.status === "pending").length;
+  const flagged = ALL_OFFERS.filter((o) => o.flagged).length;
   const accepted = ALL_OFFERS.filter((o) => o.status === "accepted").length;
   const now = new Date();
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const todayPending = ALL_OFFERS.filter((o) => o.status === "pending" && new Date(o.submitted) >= todayStart).length;
+  const todayPending = ALL_OFFERS.filter(
+    (o) => o.status === "pending" && new Date(o.submitted) >= todayStart,
+  ).length;
   if (typeof STATS !== "undefined") {
-    STATS.total = total; STATS.pending = pending; STATS.flagged = flagged;
-    STATS.accepted = accepted; STATS.todayPending = todayPending;
+    STATS.total = total;
+    STATS.pending = pending;
+    STATS.flagged = flagged;
+    STATS.accepted = accepted;
+    STATS.todayPending = todayPending;
   }
   renderStats();
 }
@@ -346,15 +356,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const _user = getUser();
   if (_user) {
     const _ini = getInitials(_user.name || "Admin");
-    const _set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-    _set("navbar-user-name",   _user.name || "Admin");
-    _set("navbar-user-role",   _user.role || "Administrator");
+    const _set = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    };
+    _set("navbar-user-name", _user.name || "Admin");
+    _set("navbar-user-role", _user.role || "Administrator");
     _set("navbar-user-avatar", _ini);
-    _set("dropdown-name",      _user.name || "Admin");
-    _set("dropdown-role",      _user.role || "Administrator");
-    _set("dropdown-avatar",    _ini);
+    _set("dropdown-name", _user.name || "Admin");
+    _set("dropdown-role", _user.role || "Administrator");
+    _set("dropdown-avatar", _ini);
   }
-
 
   /* Anomaly banner dismiss */
   document
@@ -451,7 +463,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const oldFlagged = !offer.flagged;
       offer.flagged = !offer.flagged;
       offer.status = offer.flagged ? "flagged" : "pending";
-      
+
       showToast(
         offer.flagged
           ? `Offer ${id} flagged for review.`
@@ -492,11 +504,10 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "profile.html";
   });
 
-
   /* User chip — open/close dropdown */
-  const chip     = document.getElementById("user-chip");
+  const chip = document.getElementById("user-chip");
   const dropdown = document.getElementById("user-dropdown");
-  const caret    = document.getElementById("user-caret");
+  const caret = document.getElementById("user-caret");
   chip?.addEventListener("click", (e) => {
     e.stopPropagation();
     const open = dropdown.classList.toggle("open");
@@ -525,18 +536,20 @@ document.addEventListener("DOMContentLoaded", () => {
     if (tbody) {
       tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-muted);">Loading offers…</td></tr>`;
     }
-    getOffers().then((res) => {
-      ALL_OFFERS = res;
-      updateStatsAndRender();
-      populateReqFilter();
-      refresh();
-    }).catch((err) => {
-      console.error("Failed to load offers from Firestore:", err);
-      ALL_OFFERS = [];
-      updateStatsAndRender();
-      populateReqFilter();
-      refresh();
-    });
+    getOffers()
+      .then((res) => {
+        ALL_OFFERS = res;
+        updateStatsAndRender();
+        populateReqFilter();
+        refresh();
+      })
+      .catch((err) => {
+        console.error("Failed to load offers from Firestore:", err);
+        ALL_OFFERS = [];
+        updateStatsAndRender();
+        populateReqFilter();
+        refresh();
+      });
   } else {
     ALL_OFFERS = [];
     updateStatsAndRender();

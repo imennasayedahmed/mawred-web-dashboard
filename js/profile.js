@@ -1,8 +1,5 @@
 /* ============================================================
-   MAWRED – RFQ Platform | Profile Page Logic
-   Features: tab switching, editable info form, password
-             strength meter, notification toggles, session
-             management, avatar initials, toast notifications
+   MAWRED – RFQ Platform | Profile Page
    ============================================================ */
 
 "use strict";
@@ -35,7 +32,7 @@ function formatDate(timeStr) {
       year: "numeric",
       month: "short",
       day: "numeric",
-      timeZone: "Africa/Cairo"
+      timeZone: "Africa/Cairo",
     });
   } catch {
     return "—";
@@ -55,14 +52,18 @@ function formatLastLogin(timeStr) {
     if (isToday) {
       return (
         "Today at " +
-        d.toLocaleTimeString("en-EG", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Cairo" })
+        d.toLocaleTimeString("en-EG", {
+          hour: "2-digit",
+          minute: "2-digit",
+          timeZone: "Africa/Cairo",
+        })
       );
     }
     return d.toLocaleDateString("en-EG", {
       year: "numeric",
       month: "short",
       day: "numeric",
-      timeZone: "Africa/Cairo"
+      timeZone: "Africa/Cairo",
     });
   } catch {
     return "—";
@@ -72,32 +73,32 @@ function formatLastLogin(timeStr) {
 /* ── 3. Populate all user slots from Firebase Auth ───────── */
 function populateUser() {
   // Priority: Firebase Auth currentUser → sessionStorage → hardcoded fallback
-  const fbUser   = getFirebaseUser();
-  const session  = getUser(); // from auth.js sessionStorage
+  const fbUser = getFirebaseUser();
+  const session = getUser(); // from auth.js sessionStorage
 
-  const name     = fbUser?.displayName || session?.name || "Admin";
-  const email    = fbUser?.email       || session?.email || "";
-  const role     = session?.role       || "Administrator";
-  const ini      = getInitials(name);
+  const name = fbUser?.displayName || session?.name || "Admin";
+  const email = fbUser?.email || session?.email || "";
+  const role = session?.role || "Administrator";
+  const ini = getInitials(name);
 
-  const joinDate  = formatDate(fbUser?.metadata?.creationTime);
+  const joinDate = formatDate(fbUser?.metadata?.creationTime);
   const lastLogin = formatLastLogin(fbUser?.metadata?.lastSignInTime);
 
   // ── Navbar ──────────────────────────────────────────────
-  setText("navbar-user-name",   name);
-  setText("navbar-user-role",   role);
+  setText("navbar-user-name", name);
+  setText("navbar-user-role", role);
   setText("navbar-user-avatar", ini);
 
   // ── Dropdown ─────────────────────────────────────────────
-  setText("dropdown-name",   name);
-  setText("dropdown-role",   role);
+  setText("dropdown-name", name);
+  setText("dropdown-role", role);
   setText("dropdown-avatar", ini);
 
   // ── Profile card ─────────────────────────────────────────
-  setText("profile-name",       name);
-  setText("profile-initials",   ini);
+  setText("profile-name", name);
+  setText("profile-initials", ini);
   setText("profile-role-label", role);
-  setText("profile-join-date",  joinDate);
+  setText("profile-join-date", joinDate);
   setText("profile-last-login", lastLogin);
 
   // ── Email link (dynamic) ─────────────────────────────────
@@ -110,15 +111,15 @@ function populateUser() {
   // ── Personal Info form ────────────────────────────────────
   const nameParts = name.split(" ");
   setVal("field-first-name", nameParts[0] || "");
-  setVal("field-last-name",  nameParts.slice(1).join(" ") || "");
-  setVal("field-email",      email);
+  setVal("field-last-name", nameParts.slice(1).join(" ") || "");
+  setVal("field-email", email);
 
   // Phone / department / location / bio — stored in Firestore
   // Will be filled by loadFirestoreProfile() if a profile doc exists
-  setVal("field-phone",      "");
+  setVal("field-phone", "");
   setVal("field-department", "");
-  setVal("field-location",   "");
-  setVal("field-bio",        "");
+  setVal("field-location", "");
+  setVal("field-bio", "");
 }
 
 /* ── 4. Load live stats from Firestore ──────────────────── */
@@ -144,9 +145,15 @@ async function loadFirestoreStats() {
   // Reports = flagged requests + flagged offers
   try {
     let flaggedCount = 0;
-    const rFlagged = await fbDb.collection("requests").where("status", "==", "flagged").get();
+    const rFlagged = await fbDb
+      .collection("requests")
+      .where("status", "==", "flagged")
+      .get();
     flaggedCount += rFlagged.size;
-    const oFlagged = await fbDb.collection("offers").where("status", "==", "flagged").get();
+    const oFlagged = await fbDb
+      .collection("offers")
+      .where("status", "==", "flagged")
+      .get();
     flaggedCount += oFlagged.size;
     setText("pstat-reports", String(flaggedCount));
   } catch (_) {
@@ -199,8 +206,7 @@ function setVal(id, val) {
 
 /* ── 5. Active nav highlight ─────────────────────────────── */
 (function highlightNav() {
-  const filename =
-    window.location.pathname.split("/").pop() || "profile.html";
+  const filename = window.location.pathname.split("/").pop() || "profile.html";
   document.querySelectorAll(".nav-item").forEach((link) => {
     const href = link.getAttribute("href") || "";
     link.classList.toggle(
@@ -227,7 +233,8 @@ function showToast(message, type = "success") {
     error: `<path d="M6 6l8 8M14 6l-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`,
   };
   toast.className = `toast ${type}`;
-  document.getElementById("toast-icon").innerHTML = icons[type] || icons.success;
+  document.getElementById("toast-icon").innerHTML =
+    icons[type] || icons.success;
   document.getElementById("toast-msg").textContent = message;
   void toast.offsetWidth;
   toast.classList.add("show");
@@ -239,8 +246,12 @@ function showToast(message, type = "success") {
 function wireTabs() {
   document.querySelectorAll(".profile-tab").forEach((btn) => {
     btn.addEventListener("click", () => {
-      document.querySelectorAll(".profile-tab").forEach((b) => b.classList.remove("active"));
-      document.querySelectorAll(".profile-panel").forEach((p) => p.classList.remove("active"));
+      document
+        .querySelectorAll(".profile-tab")
+        .forEach((b) => b.classList.remove("active"));
+      document
+        .querySelectorAll(".profile-panel")
+        .forEach((p) => p.classList.remove("active"));
       btn.classList.add("active");
       const panel = document.getElementById(`panel-${btn.dataset.tab}`);
       if (panel) panel.classList.add("active");
@@ -251,16 +262,16 @@ function wireTabs() {
 /* ── 8. Password strength meter ──────────────────────────── */
 function wirePasswordStrength() {
   const input = document.getElementById("field-new-password");
-  const segs  = document.querySelectorAll(".strength-seg");
+  const segs = document.querySelectorAll(".strength-seg");
   const labelEl = document.getElementById("strength-label");
   if (!input || !segs.length) return;
 
   input.addEventListener("input", () => {
     const val = input.value;
     let score = 0;
-    if (val.length >= 8)          score++;
-    if (/[A-Z]/.test(val))        score++;
-    if (/[0-9]/.test(val))        score++;
+    if (val.length >= 8) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
     if (/[^A-Za-z0-9]/.test(val)) score++;
 
     const levels = ["", "weak", "fair", "good", "strong"];
@@ -272,15 +283,15 @@ function wirePasswordStrength() {
       if (i < score) seg.classList.add("filled", levels[score]);
     });
     if (labelEl) {
-      labelEl.textContent  = val ? labels[score] || "" : "";
-      labelEl.style.color  = colors[score] || "";
+      labelEl.textContent = val ? labels[score] || "" : "";
+      labelEl.style.color = colors[score] || "";
     }
   });
 }
 
 /* ── 9. Profile info form — saves displayName to Firebase ── */
 function wireProfileForm() {
-  const form      = document.getElementById("form-profile-info");
+  const form = document.getElementById("form-profile-info");
   const cancelBtn = document.getElementById("btn-cancel-info");
 
   if (cancelBtn) {
@@ -294,7 +305,7 @@ function wireProfileForm() {
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const first = document.getElementById("field-first-name")?.value.trim();
-      const last  = document.getElementById("field-last-name")?.value.trim();
+      const last = document.getElementById("field-last-name")?.value.trim();
       if (!first) {
         showToast("First name is required", "error");
         return;
@@ -317,10 +328,10 @@ function wireProfileForm() {
       }
 
       // Update UI live
-      setText("profile-name",     fullName);
+      setText("profile-name", fullName);
       setText("profile-initials", getInitials(fullName));
       setText("navbar-user-name", fullName);
-      setText("dropdown-name",    fullName);
+      setText("dropdown-name", fullName);
       showToast("Profile updated successfully!", "success");
     });
   }
@@ -334,7 +345,7 @@ function wirePasswordForm() {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const currentPw = document.getElementById("field-current-password")?.value;
-    const newPw     = document.getElementById("field-new-password")?.value;
+    const newPw = document.getElementById("field-new-password")?.value;
     const confirmPw = document.getElementById("field-confirm-password")?.value;
 
     if (!currentPw) {
@@ -366,7 +377,9 @@ function wirePasswordForm() {
       await fbUser.updatePassword(newPw);
 
       form.reset();
-      document.querySelectorAll(".strength-seg").forEach((s) => (s.className = "strength-seg"));
+      document
+        .querySelectorAll(".strength-seg")
+        .forEach((s) => (s.className = "strength-seg"));
       setText("strength-label", "");
       showToast("Password changed successfully!", "success");
     } catch (err) {
@@ -374,8 +387,8 @@ function wirePasswordForm() {
         err.code === "auth/wrong-password"
           ? "Current password is incorrect"
           : err.code === "auth/too-many-requests"
-          ? "Too many attempts — try again later"
-          : "Failed to change password";
+            ? "Too many attempts — try again later"
+            : "Failed to change password";
       showToast(msg, "error");
     }
   });
@@ -386,7 +399,9 @@ function wireToggles() {
   document.querySelectorAll(".toggle-switch input").forEach((toggle) => {
     toggle.addEventListener("change", () => {
       const label =
-        toggle.closest(".toggle-row")?.querySelector(".toggle-label")
+        toggle
+          .closest(".toggle-row")
+          ?.querySelector(".toggle-label")
           ?.textContent?.trim() || "Setting";
       showToast(
         `${label} ${toggle.checked ? "enabled" : "disabled"}`,
@@ -400,8 +415,9 @@ function wireToggles() {
 function wireSessions() {
   document.querySelectorAll(".btn-revoke").forEach((btn) => {
     btn.addEventListener("click", () => {
-      const row  = btn.closest(".session-row");
-      const name = row?.querySelector(".session-name")?.textContent?.trim() || "session";
+      const row = btn.closest(".session-row");
+      const name =
+        row?.querySelector(".session-name")?.textContent?.trim() || "session";
       row?.style && (row.style.opacity = "0.4");
       btn.disabled = true;
       btn.textContent = "Revoked";
@@ -419,19 +435,24 @@ function wireAvatarEdit() {
 
 /* ── 14. Profile card buttons ────────────────────────────── */
 function wireCardButtons() {
-  document.getElementById("btn-download-data")?.addEventListener("click", () => {
-    showToast("Preparing your data export…", "success");
-  });
+  document
+    .getElementById("btn-download-data")
+    ?.addEventListener("click", () => {
+      showToast("Preparing your data export…", "success");
+    });
   document.getElementById("btn-deactivate")?.addEventListener("click", () => {
-    showToast("Please contact a Super Admin to deactivate your account.", "warning");
+    showToast(
+      "Please contact a Super Admin to deactivate your account.",
+      "warning",
+    );
   });
 }
 
 /* ── 15. User dropdown menu ──────────────────────────────── */
 function wireUserMenu() {
-  const chip     = document.getElementById("user-chip");
+  const chip = document.getElementById("user-chip");
   const dropdown = document.getElementById("user-dropdown");
-  const caret    = document.getElementById("user-caret");
+  const caret = document.getElementById("user-caret");
 
   chip?.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -474,8 +495,8 @@ async function loadRecentActivity() {
     const [requests, offers] = await Promise.all([getRequests(), getOffers()]);
 
     const tagged = [
-      ...requests.map(r => ({ ...r, _type: "request" })),
-      ...offers.map(o   => ({ ...o, _type: "offer"   })),
+      ...requests.map((r) => ({ ...r, _type: "request" })),
+      ...offers.map((o) => ({ ...o, _type: "offer" })),
     ];
 
     // Sort by most-recent first
@@ -511,30 +532,33 @@ async function loadRecentActivity() {
     };
 
     const STATUS_LABELS = {
-      OPEN:        "Open",
+      OPEN: "Open",
       IN_PROGRESS: "In Progress",
-      COMPLETED:   "Completed",
-      CANCELLED:   "Cancelled",
+      COMPLETED: "Completed",
+      CANCELLED: "Cancelled",
     };
 
     // Keep top 6 items
     const slice = tagged.slice(0, 6);
 
-    container.innerHTML = slice.map(item => {
-      const cfg = typeConfig[item._type] || typeConfig.request;
-      let title, desc;
+    container.innerHTML = slice
+      .map((item) => {
+        const cfg = typeConfig[item._type] || typeConfig.request;
+        let title, desc;
 
-      if (item._type === "offer") {
-        title = item.supplier?.name || "Supplier";
-        desc  = item.reqId ? `For ${item.reqId}` : "Offer submitted";
-      } else {
-        title = item.title || "Untitled Request";
-        desc  = STATUS_LABELS[item.status] || item.status || "Open";
-      }
+        if (item._type === "offer") {
+          title = item.supplier?.name || "Supplier";
+          desc = item.reqId ? `For ${item.reqId}` : "Offer submitted";
+        } else {
+          title = item.title || "Untitled Request";
+          desc = STATUS_LABELS[item.status] || item.status || "Open";
+        }
 
-      const timeStr = formatRelativeTime(item.created || item.submitted || item.createdAt);
+        const timeStr = formatRelativeTime(
+          item.created || item.submitted || item.createdAt,
+        );
 
-      return `
+        return `
         <div class="activity-feed-item">
           <div class="act-icon ${cfg.color}">
             <svg viewBox="0 0 20 20" fill="none">${cfg.icon}</svg>
@@ -545,10 +569,13 @@ async function loadRecentActivity() {
           </div>
           <div class="act-time">${timeStr}</div>
         </div>`;
-    }).join("");
-
+      })
+      .join("");
   } catch (err) {
-    console.error("[Firestore] Failed to load recent activities in profile:", err);
+    console.error(
+      "[Firestore] Failed to load recent activities in profile:",
+      err,
+    );
     container.innerHTML = `
       <div style="text-align:center;padding:24px 0;color:var(--text-muted);font-size:.85rem;">
         Failed to load activity log
@@ -564,21 +591,27 @@ function formatRelativeTime(date) {
   const diffMs = now - d;
   const diffSec = Math.floor(diffMs / 1000);
   const diffMin = Math.floor(diffSec / 60);
-  const diffHr  = Math.floor(diffMin / 60);
-  const diffDay = Math.floor(diffHr  / 24);
+  const diffHr = Math.floor(diffMin / 60);
+  const diffDay = Math.floor(diffHr / 24);
 
-  if (diffSec < 60)   return "just now";
-  if (diffMin < 60)   return `${diffMin}m ago`;
-  if (diffHr  < 24)   return `${diffHr}h ago`;
-  if (diffDay === 1)  return "Yesterday";
-  if (diffDay < 7)    return `${diffDay}d ago`;
-  return d.toLocaleDateString("en-EG", { month: "short", day: "numeric", timeZone: "Africa/Cairo" });
+  if (diffSec < 60) return "just now";
+  if (diffMin < 60) return `${diffMin}m ago`;
+  if (diffHr < 24) return `${diffHr}h ago`;
+  if (diffDay === 1) return "Yesterday";
+  if (diffDay < 7) return `${diffDay}d ago`;
+  return d.toLocaleDateString("en-EG", {
+    month: "short",
+    day: "numeric",
+    timeZone: "Africa/Cairo",
+  });
 }
 
 /* ── 17. Logout ──────────────────────────────────────────── */
 function wireLogout() {
   document.getElementById("logout-btn")?.addEventListener("click", logout);
-  document.getElementById("dropdown-signout")?.addEventListener("click", logout);
+  document
+    .getElementById("dropdown-signout")
+    ?.addEventListener("click", logout);
   document.getElementById("dropdown-profile")?.addEventListener("click", () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
@@ -608,9 +641,9 @@ document.addEventListener("DOMContentLoaded", () => {
     fbAuth.onAuthStateChanged((fbUser) => {
       if (fbUser) {
         populateUser(); // now fbAuth.currentUser is guaranteed non-null
-        loadFirestoreStats();          // live request / offer / report counts
+        loadFirestoreStats(); // live request / offer / report counts
         loadFirestoreProfile(fbUser.uid); // phone, location, bio from admins doc
-        loadRecentActivity();          // live recent activity log
+        loadRecentActivity(); // live recent activity log
       } else {
         // Firebase says no user — bounce to login
         logout();
@@ -622,4 +655,3 @@ document.addEventListener("DOMContentLoaded", () => {
     loadRecentActivity();
   }
 });
-
