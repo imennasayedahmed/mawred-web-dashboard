@@ -28,13 +28,13 @@ requireAuth();
 
 /* ── 3. Active nav highlight ─────────────────────────────── */
 (function highlightNav() {
-  const filename = window.location.pathname.split("/").pop() || "offers.html";
+  const pathSegment = window.location.pathname.split("/").pop() || "offers.html";
+  const filename = pathSegment.replace(/\.html$/, "");
   document.querySelectorAll(".nav-item").forEach((link) => {
     const href = link.getAttribute("href") || "";
-    link.classList.toggle(
-      "active",
-      href === filename || href.endsWith("/" + filename),
-    );
+    const hrefSegment = href.split("/").pop() || "";
+    const cleanHref = hrefSegment.replace(/\.html$/, "");
+    link.classList.toggle("active", cleanHref === filename);
   });
 })();
 

@@ -1177,14 +1177,31 @@ body {
 }
 
 @media (max-width: 768px) {
+  body {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    height: auto !important;
+  }
+  .app-shell {
+    height: auto !important;
+    overflow: visible !important;
+    flex-direction: column !important;
+  }
   .sidebar {
     display: none;
   }
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .main-area {
+    height: auto !important;
+    overflow: visible !important;
   }
   .page-content {
+    height: auto !important;
+    overflow: visible !important;
     padding: 20px 16px 32px;
+    flex: none !important;
+  }
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
   .navbar {
     padding: 0 16px;

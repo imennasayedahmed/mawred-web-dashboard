@@ -28,16 +28,17 @@ requireAuth();
 
 /* ── 3. Active nav highlight ─────────────────────────────── */
 (function highlightNav() {
-  const filename = window.location.pathname.split("/").pop() || "requests.html";
+  const pathSegment = window.location.pathname.split("/").pop() || "requests.html";
+  const filename = pathSegment.replace(/\.html$/, "");
   document.querySelectorAll(".nav-item").forEach((link) => {
     const href = link.getAttribute("href") || "";
+    const hrefSegment = href.split("/").pop() || "";
+    const cleanHref = hrefSegment.replace(/\.html$/, "");
     // request-detail lives under Requests
-    const isDetail = filename === "request-detail.html";
+    const isDetail = filename === "request-detail";
     link.classList.toggle(
       "active",
-      isDetail
-        ? href === "requests.html" || href.endsWith("/requests.html")
-        : href === filename || href.endsWith("/" + filename),
+      isDetail ? cleanHref === "requests" : cleanHref === filename,
     );
   });
 })();
