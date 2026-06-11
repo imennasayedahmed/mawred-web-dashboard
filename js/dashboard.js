@@ -23,11 +23,13 @@ requireAuth();
 
 /* ── 3. Active nav link highlight ───────────────────────── */
 (function highlightNav() {
-  const filename =
-    window.location.pathname.split("/").pop() || "dashboard.html";
+  const pathSegment = window.location.pathname.split("/").pop() || "dashboard.html";
+  const filename = pathSegment.replace(/\.html$/, "");
   document.querySelectorAll(".nav-item").forEach((link) => {
     const href = link.getAttribute("href") || "";
-    if (href === filename || href.endsWith("/" + filename)) {
+    const hrefSegment = href.split("/").pop() || "";
+    const cleanHref = hrefSegment.replace(/\.html$/, "");
+    if (cleanHref === filename) {
       link.classList.add("active");
     } else {
       link.classList.remove("active");
